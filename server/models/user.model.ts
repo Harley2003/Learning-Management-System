@@ -41,7 +41,7 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, "Please enter your password"],
+      // required: [true, "Please enter your password"],
       minLength: [6, "Password should be greater than 6 characters"],
       select: false
     },
@@ -80,7 +80,10 @@ userSchema.methods.SignAccessToken = function () {
     {
       id: this._id
     },
-    process.env.ACCESS_TOKEN || ""
+    process.env.ACCESS_TOKEN || "",
+    {
+      expiresIn: "5m"
+    }
   );
 };
 
@@ -90,7 +93,10 @@ userSchema.methods.SignRefreshToken = function () {
     {
       id: this._id
     },
-    process.env.REFRESH_TOKEN || ""
+    process.env.REFRESH_TOKEN || "",
+    {
+      expiresIn: "3d"
+    }
   );
 };
 
