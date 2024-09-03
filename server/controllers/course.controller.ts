@@ -66,3 +66,69 @@ export const editCourse = CatchAsyncError(
     }
   }
 );
+
+// get single course - without purchasing
+export const getSingleCourse = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const courseId = req.params.id;
+
+      const isCacheExist = await redis.get(courseId);
+
+      if (isCacheExist) {
+        const course = JSON.parse(isCacheExist);
+        res.status(200).json({
+          success: true,
+          message: "Course fetched successfully - single",
+          course
+        });
+      } else {
+        const course = await CourseModel.findById(courseId).select(
+          "-courseData.videoUrl -courseData.suggestions -courseData.questions -courseData.links"
+        );
+
+        await redis.set(courseId, JSON.stringify(course));
+
+        res.status(200).json({
+          success: true,
+          message: "Course fetched successfully - single",
+          course
+        });
+      }
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  }
+);
+
+// get all courses - without purchasing
+export const getAllCourses = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const isCacheExist = await redis.get("allCourses");
+
+      if (isCacheExist) {
+        const courses = JSON.parse(isCacheExist);
+        res.status(200).json({
+          success: true,
+          message: "Courses fetched successfully - all",
+          courses
+        });
+      } else {
+        const courses = await CourseModel.find().select(
+          "-courseData.videoUrl -courseData.suggestions -courseData.questions -courseData.links"
+        );
+
+        await redis.set("allCourses", JSON.stringify(courses));
+        
+        res.status(200).json({
+          success: true,
+          message: "Courses fetched successfully - all",
+          courses
+        });
+      }
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  }
+);
