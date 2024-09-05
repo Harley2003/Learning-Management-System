@@ -8,7 +8,7 @@ import CourseModel from "../models/course.model";
 import ejs from "ejs";
 import path from "path";
 import sendMail from "../utils/sendMail";
-import { newOrder } from "../services/order.service";
+import { getAllOrderServices, newOrder } from "../services/order.service";
 
 // create order
 export const createOrder = CatchAsyncError(
@@ -92,6 +92,17 @@ export const createOrder = CatchAsyncError(
       newOrder(data, res, next);
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
+    }
+  }
+);
+
+// get all orders - only for admin
+export const getAllOrdersAdmin = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await getAllOrderServices(res);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
     }
   }
 );
