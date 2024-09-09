@@ -8,6 +8,7 @@ import NavItems from "../utils/NavItems";
 import ThemeSwitcher from "../utils/ThemeSwitcher";
 import CustomModal from "../utils/CustomModal";
 import Login from "../components/auth/Login";
+import Register from "../components/auth/Register";
 
 type Props = {
   open: boolean;
@@ -18,7 +19,6 @@ type Props = {
 };
 
 const Header: FC<Props> = ({ open, setOpen, activeItem, route, setRoute }) => {
-
   const [active, setActive] = useState(false);
   const [openSidebar, setOpenSidebar] = useState(false);
 
@@ -110,6 +110,20 @@ const Header: FC<Props> = ({ open, setOpen, activeItem, route, setRoute }) => {
               setRoute={setRoute}
               activeItem={activeItem}
               component={Login}
+            />
+          )}
+        </>
+      )}
+
+      {route === "Register" && (
+        <>
+          {open && (
+            <CustomModal
+              open={open}
+              setOpen={setOpen}
+              setRoute={setRoute}
+              activeItem={activeItem}
+              component={Register}
             />
           )}
         </>
