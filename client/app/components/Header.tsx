@@ -17,7 +17,8 @@ type Props = {
   setRoute: (route: string) => void;
 };
 
-const Header: FC<Props> = ({ open, setOpen, activeItem, route }) => {
+const Header: FC<Props> = ({ open, setOpen, activeItem, route, setRoute }) => {
+
   const [active, setActive] = useState(false);
   const [openSidebar, setOpenSidebar] = useState(false);
 
@@ -106,6 +107,7 @@ const Header: FC<Props> = ({ open, setOpen, activeItem, route }) => {
             <CustomModal
               open={open}
               setOpen={setOpen}
+              setRoute={setRoute}
               activeItem={activeItem}
               component={Login}
             />
