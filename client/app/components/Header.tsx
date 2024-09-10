@@ -9,6 +9,7 @@ import ThemeSwitcher from "../utils/ThemeSwitcher";
 import CustomModal from "../utils/CustomModal";
 import Login from "../components/auth/Login";
 import Register from "../components/auth/Register";
+import Verification from "./auth/Verification";
 
 type Props = {
   open: boolean;
@@ -124,6 +125,20 @@ const Header: FC<Props> = ({ open, setOpen, activeItem, route, setRoute }) => {
               setRoute={setRoute}
               activeItem={activeItem}
               component={Register}
+            />
+          )}
+        </>
+      )}
+
+      {route === "Verification" && (
+        <>
+          {open && (
+            <CustomModal
+              open={open}
+              setOpen={setOpen}
+              setRoute={setRoute}
+              activeItem={activeItem}
+              component={Verification}
             />
           )}
         </>
