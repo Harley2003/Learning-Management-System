@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { styles } from "@/app/styles/style";
@@ -10,8 +10,12 @@ import {
   AiOutlineEyeInvisible
 } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
+import { useLoginMutation } from "@/redux/features/auth/authApi";
+import toast from "react-hot-toast";
+import { signIn } from "next-auth/react";
 
 type Props = {
+  setOpen: (open: boolean) => void;
   setRoute: (route: string) => void;
 };
 
@@ -24,8 +28,21 @@ const schema = Yup.object().shape({
     .min(6, "Password must be at least 6 characters")
 });
 
-const Login: FC<Props> = ({ setRoute }) => {
+const Login: FC<Props> = ({ setRoute, setOpen }) => {
   const [show, setShow] = useState(false);
+  const [login, { isSuccess, error }] = useLoginMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Login successful");
+      setOpen(false);
+    }
+
+    if (error && "data" in error) {
+      const errorData = error as any;
+      toast.error(errorData.data.message);
+    }
+  }, [isSuccess, setOpen, error]);
 
   const formik = useFormik({
     initialValues: {
@@ -34,7 +51,11 @@ const Login: FC<Props> = ({ setRoute }) => {
     },
     validationSchema: schema,
     onSubmit: async ({ email, password }) => {
-      console.log(email, password);
+      try {
+        await login({ email, password });
+      } catch (error: any) {
+        console.log("Login error: " + error);
+      }
     }
   });
 
@@ -101,8 +122,8 @@ const Login: FC<Props> = ({ setRoute }) => {
           Or join with
         </h5>
         <div className="flex items-center justify-center my-3">
-          <FcGoogle size={30} className="cursor-pointer mr-2" />
-          <AiFillGithub size={30} className="cursor-pointer ml-2" />
+          <FcGoogle size={30} className="cursor-pointer mr-2" onClick={() => signIn("google")}/>
+          <AiFillGithub size={30} className="cursor-pointer ml-2" onClick={() => signIn("github")}/>
         </div>
         <h5 className="text-center pt-4 font-Poppins text-[14px]">
           Not have any account?{" "}
