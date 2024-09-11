@@ -13,8 +13,12 @@ import Verification from "./auth/Verification";
 import { useSelector } from "react-redux";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import { useSocialAuthMutation } from "@/redux/features/auth/authApi";
+import {
+  useLogoutQuery,
+  useSocialAuthMutation
+} from "@/redux/features/auth/authApi";
 import toast from "react-hot-toast";
+import avatarDefault from "../../public/assests/avatar.png";
 
 type Props = {
   open: boolean;
@@ -30,6 +34,11 @@ const Header: FC<Props> = ({ open, setOpen, activeItem, route, setRoute }) => {
   const { user } = useSelector((state: any) => state.auth);
   const { data } = useSession();
   const [socialAuth, { isSuccess, error }] = useSocialAuthMutation();
+  const [logout, setLogout] = useState(false);
+
+  const {} = useLogoutQuery(undefined, {
+    skip: !logout ? true : false
+  });
 
   if (typeof window !== "undefined") {
     window.addEventListener("scroll", () => {
@@ -50,8 +59,12 @@ const Header: FC<Props> = ({ open, setOpen, activeItem, route, setRoute }) => {
       });
     }
 
-    if (isSuccess) {
+    if (data === null && isSuccess) {
       toast.success("Login successful");
+    }
+
+    if (data === null) {
+      setLogout(true);
     }
   }, [data, user, isSuccess, socialAuth]);
 
@@ -98,11 +111,14 @@ const Header: FC<Props> = ({ open, setOpen, activeItem, route, setRoute }) => {
                   <Image
                     src={
                       user.avatar
-                        ? user.avatar
-                        : require("../../public/assests/avatar.png")
+                        ? user.avatar.url
+                        : avatarDefault
                     }
                     alt=""
+                    width={30}
+                    height={30}
                     className="h-[30px] w-[30px] rounded-full cursor-pointer"
+                    style={{border: activeItem === 5 ? "2px solid #37a39a" : "none"}}
                   />
                 </Link>
               ) : (
