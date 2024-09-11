@@ -123,9 +123,9 @@ const Login: FC<Props> = ({ setRoute, setOpen }) => {
         </h5>
         <div className="flex items-center justify-center my-3">
           <FcGoogle size={30} className="cursor-pointer mr-2" onClick={() => signIn("google")}/>
-          <AiFillGithub size={30} className="cursor-pointer ml-2" onClick={() => signIn("github")}/>
+          <AiFillGithub size={30} className="cursor-pointer ml-2 dark:text-white text-black" onClick={() => signIn("github")}/>
         </div>
-        <h5 className="text-center pt-4 font-Poppins text-[14px]">
+        <h5 className="text-center pt-4 font-Poppins text-[14px] dark:text-white text-black">
           Not have any account?{" "}
           <span
             className="text-[#2190ff] pl-1 cursor-pointer"
