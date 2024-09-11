@@ -4,9 +4,15 @@ import { Poppins } from "next/font/google";
 import { Josefin_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./utils/Theme-provider";
-import { Toaster } from "react-hot-toast";
+// import { Toaster } from "react-hot-toast";
 import { Providers } from "./Provider";
 import { SessionProvider } from "next-auth/react";
+import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
+import Loader from "./components/loader/Loader";
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
+
+const Toaster = dynamic(() => import('react-hot-toast').then(mod => mod.Toaster), { ssr: false });
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -33,7 +39,7 @@ export default function RootLayout({
         <Providers>
           <SessionProvider>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-              {children}
+              <Custom>{children}</Custom>
               <Toaster position="top-center" reverseOrder={false} />
             </ThemeProvider>
           </SessionProvider>
@@ -42,3 +48,21 @@ export default function RootLayout({
     </html>
   );
 }
+
+const Custom: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isLoading } = useLoadUserQuery({});
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    // Return null until the component is mounted
+    console.log("isLoading", isLoading);
+    return null;
+  }
+
+  return <>{isLoading ? <Loader /> : <>{children}</>}</>;
+};
+
