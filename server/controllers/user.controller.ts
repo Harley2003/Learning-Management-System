@@ -278,12 +278,13 @@ interface ISocialAuthBody {
   name: string;
   email: string;
   avatar: string;
+  password: string;
 }
 
 export const socialAuth = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { email, name, avatar } = req.body as ISocialAuthBody;
+      const { email, name, avatar, password } = req.body as ISocialAuthBody;
 
       const user = await UserModel.findOne({ email });
 
@@ -291,7 +292,8 @@ export const socialAuth = CatchAsyncError(
         const newUser = await UserModel.create({
           email,
           name,
-          avatar
+          avatar,
+          password
         });
         sendToken(newUser, 200, res);
       } else {
