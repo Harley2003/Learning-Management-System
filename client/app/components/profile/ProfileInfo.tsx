@@ -3,8 +3,9 @@ import avatarDefault from "../../../public/assests/avatar.png";
 import Image from 'next/image';
 import { AiOutlineCamera } from 'react-icons/ai';
 import { styles } from '@/app/styles/style';
-import { useUpdateAvatarMutation } from '@/redux/features/user/userApi';
+import { useEditPrilfeMutation, useUpdateAvatarMutation } from '@/redux/features/user/userApi';
 import { useLoadUserQuery } from '@/redux/features/api/apiSlice';
+import toast from 'react-hot-toast';
 
 type Props = {
     avatar: string | null;
@@ -16,6 +17,7 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
     const [updateAvatar, { isSuccess, error }] = useUpdateAvatarMutation();
     const [loadUser, setLoadUser] = useState(false);
     const { } = useLoadUserQuery(undefined, { skip: loadUser ? false : true });
+    const [editProfile, { isSuccess: successEdit, error: errorEdit }] = useEditPrilfeMutation();
 
     const handlerImage = async (e: any) => {
         const file = e.target.files[0];
@@ -32,26 +34,32 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
         fileReader.readAsDataURL(file);
     }
 
+    const handlerSubmit = async (e: any) => {
+        e.preventDefault();
+        if (name !== "") {
+            await editProfile({ name });
+        }
+    }
+
     useEffect(() => {
-        if (isSuccess) {
+        if (isSuccess || successEdit) {
             setLoadUser(true);
         }
 
-        if (error) {
+        if (error || errorEdit) {
             console.log("ProfileInfo.tsx: ", error);
         }
-    }, [isSuccess, error])
 
-
-    const handlerSubmit = async (e: any) => {
-
-    }
+        if (successEdit) {
+            toast.success("Profile updated successfully");
+        }
+    }, [isSuccess, error, successEdit, errorEdit])
 
     return (
         <>
             <div className="w-full flex justify-center">
                 <div className="relative">
-                    <Image src={user.avatar || avatar ? user.avatar.url || avatar : avatarDefault} alt="" className="w-[120px] h-[120px] cursor-pointer border-[3px] border-[#37a39a] rounded-full" width={120} height={120}/>
+                    <Image src={user.avatar || avatar ? user.avatar.url || avatar : avatarDefault} alt="" className="w-[120px] h-[120px] cursor-pointer border-[3px] border-[#37a39a] rounded-full" width={120} height={120} />
                     <input
                         type="file"
                         name="avatar"

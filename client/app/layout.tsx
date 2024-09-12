@@ -12,7 +12,10 @@ import Loader from "./components/loader/Loader";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
-const Toaster = dynamic(() => import('react-hot-toast').then(mod => mod.Toaster), { ssr: false });
+const Toaster = dynamic(
+  () => import("react-hot-toast").then((mod) => mod.Toaster),
+  { ssr: false }
+);
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -39,7 +42,9 @@ export default function RootLayout({
         <Providers>
           <SessionProvider>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-              <Custom>{children}</Custom>
+              <Custom>
+                <div>{children}</div>
+              </Custom>
               <Toaster position="top-center" reverseOrder={false} />
             </ThemeProvider>
           </SessionProvider>
@@ -58,11 +63,8 @@ const Custom: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }, []);
 
   if (!mounted) {
-    // Return null until the component is mounted
-    console.log("isLoading", isLoading);
     return null;
   }
 
   return <>{isLoading ? <Loader /> : <>{children}</>}</>;
 };
-
