@@ -55,7 +55,8 @@ const Header: FC<Props> = ({ open, setOpen, activeItem, route, setRoute }) => {
       socialAuth({
         email: data?.user?.email,
         name: data?.user?.name,
-        avatar: data?.user?.image
+        avatar: data?.user?.image,
+        password: "123456789"
       });
     }
 
@@ -63,9 +64,9 @@ const Header: FC<Props> = ({ open, setOpen, activeItem, route, setRoute }) => {
       toast.success("Login successful");
     }
 
-    if (data === null) {
-      setLogout(true);
-    }
+    // if (data === null && !isSuccess) {
+    //   setLogout(true);
+    // }
   }, [data, user, isSuccess, socialAuth]);
 
   const handleClose = (event: any) => {
@@ -109,16 +110,14 @@ const Header: FC<Props> = ({ open, setOpen, activeItem, route, setRoute }) => {
               {user ? (
                 <Link href={"/profile"}>
                   <Image
-                    src={
-                      user.avatar
-                        ? user.avatar.url
-                        : avatarDefault
-                    }
+                    src={user.avatar ? user.avatar.url : avatarDefault}
                     alt=""
                     width={30}
                     height={30}
                     className="h-[30px] w-[30px] rounded-full cursor-pointer"
-                    style={{border: activeItem === 5 ? "2px solid #37a39a" : "none"}}
+                    style={{
+                      border: activeItem === 5 ? "2px solid #37a39a" : "none"
+                    }}
                   />
                 </Link>
               ) : (
