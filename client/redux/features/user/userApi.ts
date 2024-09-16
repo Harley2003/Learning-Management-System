@@ -40,6 +40,13 @@ export const userApi = apiSlice.injectEndpoints({
         body: { email, role },
         credentials: "include" as const
       })
+    }),
+    deleteUser: builder.mutation({
+      query: (id) => ({
+        url: `delete-user/${id}`,
+        method: "DELETE",
+        credentials: "include" as const
+      })
     })
   })
 });
@@ -49,5 +56,6 @@ export const {
   useEditPrilfeMutation,
   useUpdatePasswordMutation,
   useGetAllUsersQuery,
-  useUpdateUserRoleMutation
+  useUpdateUserRoleMutation,
+  useDeleteUserMutation
 } = userApi;
