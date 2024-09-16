@@ -25,7 +25,10 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
   const [role, setRole] = useState("admin");
   const [open, setOpen] = useState(false);
   const [userId, setUserId] = useState("");
-  const { isLoading, data, refetch } = useGetAllUsersQuery({});
+  const { isLoading, data, refetch } = useGetAllUsersQuery(
+    {},
+    { refetchOnMountOrArgChange: true }
+  );
   const [updateUserRole, { isSuccess, error: isError }] =
     useUpdateUserRoleMutation();
   const [deleteUser, { isSuccess: hasSuccess, error: hasError }] =
@@ -40,6 +43,7 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
     }
 
     if (isSuccess) {
+      refetch();
       toast.success("User role updated successfully");
       setActive(false);
     }
@@ -52,10 +56,11 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
     }
 
     if (hasSuccess) {
+      refetch();
       toast.success("Delete user successfully");
       setOpen(false);
     }
-  }, [isError, isSuccess, hasError, hasSuccess]);
+  }, [isError, isSuccess, hasError, hasSuccess, refetch]);
 
   const columns = [
     { field: "id", headerName: "ID", flex: 0.3 },
