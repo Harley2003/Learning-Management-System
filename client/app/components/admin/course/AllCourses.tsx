@@ -18,12 +18,11 @@ const AllCourses: FC<Props> = (props) => {
   const [open, setOpen] = useState(false);
   const [courseId, setCourseId] = useState("");
   const { isLoading, data, refetch } = useGetAllCoursesQuery(
-    {},
-    { refetchOnMountOrArgChange: true }
+    {}
   );
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
-    { field: "name course", headerName: "Name Course", flex: 1 },
+    { field: "name", headerName: "Name Course", flex: 1 },
     { field: "ratings", headerName: "Ratings", flex: 0.5 },
     { field: "purchased", headerName: "Purchased", flex: 0.5 },
     { field: "created_at", headerName: "Created At", flex: 0.5 },
@@ -72,7 +71,7 @@ const AllCourses: FC<Props> = (props) => {
       data.courses.forEach((item: any) => {
         rows.push({
           id: item._id,
-          title: item.name,
+          name: item.name,
           ratings: item.ratings,
           purchased: item.purchased,
           created_at: format(item.createdAt)
@@ -92,49 +91,49 @@ const AllCourses: FC<Props> = (props) => {
             sx={{
               "& .MuiDataGrid-root": {
                 border: "none",
-                outline: "none"
+                outline: "none",
               },
               "& .css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon": {
-                color: theme === "dark" ? "#fff" : "#000"
+                color: theme === "dark" ? "#fff" : "#000",
               },
               "& .MuiDataGrid-sortIcon": {
-                color: theme === "dark" ? "#fff" : "#000"
+                color: theme === "dark" ? "#fff" : "#000",
               },
               "& .MuiDataGrid-row": {
                 color: theme === "dark" ? "#fff" : "#000",
                 borderBottom:
                   theme === "dark"
                     ? "1px solid #ffffff30!important"
-                    : "1px solid #ccc!important"
+                    : "1px solid #ccc!important",
               },
               "& .MuiTablePagination-root": {
-                color: theme === "dark" ? "#fff" : "#000"
+                color: theme === "dark" ? "#fff" : "#000",
               },
               "& .MuiDataGrid-cell": {
-                borderBottom: "none!important"
+                borderBottom: "none!important",
               },
               "& .name-column--cell": {
-                color: theme === "dark" ? "#fff" : "#000"
+                color: theme === "dark" ? "#fff" : "#000",
               },
               "& .MuiDataGrid-columnHeaders": {
                 backgroundColor: theme === "dark" ? "#3e4396" : "#A4A9FC",
                 borderBottom: "none",
-                color: theme === "dark" ? "#fff" : "#000"
+                color: theme === "dark" ? "#fff" : "#000",
               },
               "& .MuiDataGrid-virtualScroller": {
-                backgroundColor: theme === "dark" ? "#1F2A40" : "#F2F0F0"
+                backgroundColor: theme === "dark" ? "#1F2A40" : "#F2F0F0",
               },
               "& .MuiDataGrid-footerContainer": {
                 color: theme === "dark" ? "#fff" : "#000",
                 borderTop: "none",
-                backgroundColor: theme === "dark" ? "#3e4396" : "#A4A9FC"
+                backgroundColor: theme === "dark" ? "#3e4396" : "#A4A9FC",
               },
               "& .MuiCheckbox-root": {
                 color:
-                  theme === "dark" ? `#b7ebde !important` : `#000 !important`
+                  theme === "dark" ? `#b7ebde !important` : `#000 !important`,
               },
               "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-                color: `#fff !important`
+                color: `#fff !important`,
               }
             }}
           >
