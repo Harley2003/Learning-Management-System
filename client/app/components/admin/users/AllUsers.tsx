@@ -1,46 +1,38 @@
 import React, { FC, useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, Button, Modal } from "@mui/material";
-import { AiOutlineDelete } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineMail } from "react-icons/ai";
 import { useTheme } from "next-themes";
-import { FiEdit2 } from "react-icons/fi";
 import { format } from "timeago.js";
 import { styles } from "@/app/styles/style";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
-import { useGetAllCoursesQuery } from "@/redux/features/courses/courseApi";
+import { useGetAllUsersQuery } from "@/redux/features/user/userApi";
 import Loader from "../../loader/Loader";
 
-type Props = {};
+type Props = {
+  isTeam?: boolean;
+};
 
-const AllCourses: FC<Props> = (props) => {
+const AllCourses: FC<Props> = ({ isTeam }) => {
   const { theme, setTheme } = useTheme();
+  const [active, setActive] = useState(false);
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState("admin");
   const [open, setOpen] = useState(false);
-  const [courseId, setCourseId] = useState("");
-  const { isLoading, data, refetch } = useGetAllCoursesQuery(
+  const [userId, setUserId] = useState("");
+  const { isLoading, data, refetch } = useGetAllUsersQuery(
     {},
     { refetchOnMountOrArgChange: true }
   );
+
   const columns = [
-    { field: "id", headerName: "ID", flex: 0.5 },
-    { field: "name course", headerName: "Name Course", flex: 1 },
-    { field: "ratings", headerName: "Ratings", flex: 0.5 },
-    { field: "purchased", headerName: "Purchased", flex: 0.5 },
-    { field: "created_at", headerName: "Created At", flex: 0.5 },
-    {
-      field: "edit",
-      headerName: "Edit",
-      flex: 0.2,
-      renderCell: (params: any) => {
-        return (
-          <Button>
-            <Link href={`/admin/edit-course/${params.row.id}`}>
-              <FiEdit2 className="dark:text-white text-black" size={20} />
-            </Link>
-          </Button>
-        );
-      }
-    },
+    { field: "id", headerName: "ID", flex: 0.3 },
+    { field: "name", headerName: "Name", flex: 0.5 },
+    { field: "email", headerName: "Email", flex: 0.5 },
+    { field: "role", headerName: "Role", flex: 0.5 },
+    { field: "courses", headerName: "Purchased Courses", flex: 0.5 },
+    { field: "created_at", headerName: "Joined At", flex: 0.5 },
     {
       field: "delete",
       headerName: "Delete",
@@ -51,7 +43,7 @@ const AllCourses: FC<Props> = (props) => {
             <Button
               onClick={() => {
                 setOpen(!open);
-                setCourseId(params.row.id);
+                setUserId(params.row.id);
               }}
             >
               <AiOutlineDelete
@@ -62,19 +54,49 @@ const AllCourses: FC<Props> = (props) => {
           </>
         );
       }
+    },
+    {
+      field: "edit email",
+      headerName: "Email",
+      flex: 0.2,
+      renderCell: (params: any) => {
+        return (
+          <Button>
+            <Link href={`mailto:${params.row.email}`}>
+              <AiOutlineMail className="dark:text-white text-black" size={20} />
+            </Link>
+          </Button>
+        );
+      }
     }
   ];
 
   const rows: any = [];
 
-  {
-    data &&
-      data.courses.forEach((item: any) => {
+  if (isTeam) {
+    const newData =
+      data && data.users.filter((item: any) => item.role === "admin");
+
+    newData &&
+      newData.forEach((item: any) => {
         rows.push({
           id: item._id,
-          title: item.name,
-          ratings: item.ratings,
-          purchased: item.purchased,
+          name: item.name,
+          email: item.email,
+          role: item.role,
+          courses: item.courses.length,
+          created_at: format(item.createdAt)
+        });
+      });
+  } else {
+    data &&
+      data.users.forEach((item: any) => {
+        rows.push({
+          id: item._id,
+          name: item.name,
+          email: item.email,
+          role: item.role,
+          courses: item.courses.length,
           created_at: format(item.createdAt)
         });
       });
@@ -86,6 +108,16 @@ const AllCourses: FC<Props> = (props) => {
         <Loader />
       ) : (
         <Box m="20px">
+          {isTeam && (
+            <div className="w-full flex justify-end">
+              <div
+                className={`${styles.button} !w-[200px] !rounded-[10px] dark:bg-[#57c7a3] !h-[35px] dark:border dark:border-[#ffffff6c]`}
+                onClick={() => setActive(!active)}
+              >
+                Add New Member
+              </div>
+            </div>
+          )}
           <Box
             m="40px 0 0 0"
             height="80vh"
@@ -140,6 +172,41 @@ const AllCourses: FC<Props> = (props) => {
           >
             <DataGrid checkboxSelection rows={rows} columns={columns} />
           </Box>
+          {active && (
+            <Modal
+              open={active}
+              onClose={() => setActive(!active)}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[450px] bg-white dark:bg-slate-900 rounded-[8px] shadow p-4 outline-none">
+                <h1 className={`${styles.title}`}>Add New Member</h1>
+                <div className="mt-4">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter email..."
+                    className={`${styles.input}`}
+                  />
+                  <select
+                    name=""
+                    id=""
+                    className={`${styles.input} !mt-6`}
+                    onChange={(e: any) => setRole(e.target.value)}
+                  >
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
+                  </select>
+                  <br />
+                  <div className={`${styles.button} my-6 !h-[30px]`}>
+                    Submit
+                  </div>
+                </div>
+              </Box>
+            </Modal>
+          )}
+
           {open && (
             <Modal
               open={open}
@@ -149,11 +216,11 @@ const AllCourses: FC<Props> = (props) => {
             >
               <Box className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[450px] bg-white dark:bg-slate-900 rounded-[8px] shadow p-4 outline-none">
                 <h1 className={`${styles.title}`}>
-                  Are you sure you want to delete this course?
+                  Are you sure you want to delete this user?
                 </h1>
                 <div className="flex w-full items-center justify-between mb-6 mt-4">
                   <div
-                    className={`${styles.button} !w-[120px] h-[30px] bg-[#47d097]`}
+                    className={`${styles.button} !w-[120px] h-[30px] bg-[#57c7a3]`}
                     onClick={() => setOpen(!open)}
                   >
                     Cancel
