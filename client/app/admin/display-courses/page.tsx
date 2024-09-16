@@ -1,10 +1,11 @@
 "use client";
 
 import React, { FC } from "react";
-import AdminProtected from "./../../hooks/adminProtected";
-import Heading from "./../../utils/Heading";
-import AdminSidebar from "./../../components/admin/sidebar/AdminSidebar";
-import DashboardHero from "./../../components/admin/DashboardHero";
+import AdminProtected from "../../hooks/adminProtected";
+import Heading from "../../utils/Heading";
+import AdminSidebar from "../../components/admin/sidebar/AdminSidebar";
+import DashboardHero from "../../components/admin/DashboardHero";
+import AllCourses from '../../components/admin/course/AllCourses';
 
 type Props = {};
 
@@ -23,6 +24,7 @@ const page: FC<Props> = (props) => {
           </div>
           <div className="w-[85%]">
             <DashboardHero />
+            <AllCourses />
           </div>
         </div>
       </AdminProtected>

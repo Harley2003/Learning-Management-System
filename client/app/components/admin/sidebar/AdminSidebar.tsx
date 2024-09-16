@@ -227,7 +227,7 @@ const AdminSidebar = () => {
             />
             <Item
               title="Live Courses"
-              to="/admin/courses"
+              to="/admin/display-courses"
               icon={
                 <OndemandVideoIcon className="text-black dark:text-white" />
               }
