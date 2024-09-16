@@ -3,6 +3,7 @@ import ErrorHandler from "../utils/ErrorHandler";
 import { CatchAsyncError } from "./catchAsyncErrors";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { redis } from "../utils/redis";
+import { updateAccessToken } from "../controllers/user.controller";
 
 // authenticated user
 export const isAuthenticated = CatchAsyncError(
@@ -15,24 +16,34 @@ export const isAuthenticated = CatchAsyncError(
       );
     }
 
-    const decoded = jwt.verify(
+    const decoded = jwt.decode(
       access_token,
-      process.env.ACCESS_TOKEN as string
     ) as JwtPayload;
 
     if (!decoded) {
       return next(new ErrorHandler("Access token is not valid", 400));
     }
 
-    const user = await redis.get(decoded.id);
+    // check if the access token is expired
+    if (decoded.exp && decoded.exp <= Date.now() / 1000) {
+      try {
+        await updateAccessToken(req, res, next);
+      } catch (error: any) {
+        return next(error);
+      }
+    } else {
+      const user = await redis.get(decoded.id);
 
-    if (!user) {
-      return next(new ErrorHandler("Please login to access this resource", 400));
+      if (!user) {
+        return next(
+          new ErrorHandler("Please login to access this resource", 400)
+        );
+      }
+
+      req.user = JSON.parse(user);
+
+      next();
     }
-
-    req.user = JSON.parse(user);
-
-    next();
   }
 );
 
