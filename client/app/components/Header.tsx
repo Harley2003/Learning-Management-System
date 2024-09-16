@@ -50,8 +50,28 @@ const Header: FC<Props> = ({ open, setOpen, activeItem, route, setRoute }) => {
     });
   }
 
+  // useEffect(() => {
+  //   if (!user && data) {
+  //     socialAuth({
+  //       email: data?.user?.email,
+  //       name: data?.user?.name,
+  //       avatar: data?.user?.image,
+  //       password: "123456789"
+  //     });
+  //   }
+
+  //   if (data === null && isSuccess) {
+  //     toast.success("Login successful");
+  //   }
+
+  //   if (data === null) {
+  //     setLogout(true);
+  //   }
+  // }, [data, user, isSuccess, socialAuth]);
+
   useEffect(() => {
     if (!user && data) {
+      // Đăng nhập xã hội nếu chưa có user nhưng session đã có data
       socialAuth({
         email: data?.user?.email,
         name: data?.user?.name,
@@ -60,13 +80,16 @@ const Header: FC<Props> = ({ open, setOpen, activeItem, route, setRoute }) => {
       });
     }
 
-    if (data === null && isSuccess) {
-      toast.success("Login successful");
+    if (!user && !data && !isSuccess) {
+      // Nếu không có user và session data vẫn null, nhưng login chưa thành công, không cần logout ngay
+      setLogout(false);
     }
 
-    // if (data === null && !isSuccess) {
-    //   setLogout(true);
-    // }
+    if (isSuccess && !data) {
+      // Khi đăng nhập xã hội thành công và session data không tồn tại, mới xử lý đăng xuất
+      toast.success("Login successful");
+      setLogout(true); // Chỉ khi session không tồn tại sau khi đăng nhập thành công
+    }
   }, [data, user, isSuccess, socialAuth]);
 
   const handleClose = (event: any) => {
