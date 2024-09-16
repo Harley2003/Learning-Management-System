@@ -7,7 +7,10 @@ import { format } from "timeago.js";
 import { styles } from "@/app/styles/style";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
-import { useGetAllUsersQuery } from "@/redux/features/user/userApi";
+import {
+  useGetAllUsersQuery,
+  useUpdateUserRoleMutation
+} from "@/redux/features/user/userApi";
 import Loader from "../../loader/Loader";
 
 type Props = {
@@ -22,9 +25,24 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
   const [open, setOpen] = useState(false);
   const [userId, setUserId] = useState("");
   const { isLoading, data, refetch } = useGetAllUsersQuery(
-    {},
-    { refetchOnMountOrArgChange: true }
+    {}
   );
+  const [updateUserRole, { isSuccess, error: isError }] =
+    useUpdateUserRoleMutation();
+
+    useEffect(() => {
+      if (isError) {
+        if ("data" in isError) {
+          const errorMessage = isError as any;
+          toast.error(errorMessage.data.message);
+        }
+      }
+  
+      if (isSuccess) {
+        toast.success("User role updated successfully");
+        setActive(false);
+      }
+    }, [isError, isSuccess]);
 
   const columns = [
     { field: "id", headerName: "ID", flex: 0.3 },
@@ -102,8 +120,12 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
       });
   }
 
+  const handleSubmit = async () => {
+    await updateUserRole({ email, role });
+  };
+
   return (
-    <div className="mt-[120px]">
+    <div className="mt-[100px]">
       {isLoading ? (
         <Loader />
       ) : (
@@ -124,49 +146,49 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
             sx={{
               "& .MuiDataGrid-root": {
                 border: "none",
-                outline: "none"
+                outline: "none",
               },
               "& .css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon": {
-                color: theme === "dark" ? "#fff" : "#000"
+                color: theme === "dark" ? "#fff" : "#000",
               },
               "& .MuiDataGrid-sortIcon": {
-                color: theme === "dark" ? "#fff" : "#000"
+                color: theme === "dark" ? "#fff" : "#000",
               },
               "& .MuiDataGrid-row": {
                 color: theme === "dark" ? "#fff" : "#000",
                 borderBottom:
                   theme === "dark"
                     ? "1px solid #ffffff30!important"
-                    : "1px solid #ccc!important"
+                    : "1px solid #ccc!important",
               },
               "& .MuiTablePagination-root": {
-                color: theme === "dark" ? "#fff" : "#000"
+                color: theme === "dark" ? "#fff" : "#000",
               },
               "& .MuiDataGrid-cell": {
-                borderBottom: "none!important"
+                borderBottom: "none!important",
               },
               "& .name-column--cell": {
-                color: theme === "dark" ? "#fff" : "#000"
+                color: theme === "dark" ? "#fff" : "#000",
               },
               "& .MuiDataGrid-columnHeaders": {
                 backgroundColor: theme === "dark" ? "#3e4396" : "#A4A9FC",
                 borderBottom: "none",
-                color: theme === "dark" ? "#fff" : "#000"
+                color: theme === "dark" ? "#fff" : "#000",
               },
               "& .MuiDataGrid-virtualScroller": {
-                backgroundColor: theme === "dark" ? "#1F2A40" : "#F2F0F0"
+                backgroundColor: theme === "dark" ? "#1F2A40" : "#F2F0F0",
               },
               "& .MuiDataGrid-footerContainer": {
                 color: theme === "dark" ? "#fff" : "#000",
                 borderTop: "none",
-                backgroundColor: theme === "dark" ? "#3e4396" : "#A4A9FC"
+                backgroundColor: theme === "dark" ? "#3e4396" : "#A4A9FC",
               },
               "& .MuiCheckbox-root": {
                 color:
-                  theme === "dark" ? `#b7ebde !important` : `#000 !important`
+                  theme === "dark" ? `#b7ebde !important` : `#000 !important`,
               },
               "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-                color: `#fff !important`
+                color: `#fff !important`,
               }
             }}
           >
@@ -199,7 +221,10 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
                     <option value="user">User</option>
                   </select>
                   <br />
-                  <div className={`${styles.button} my-6 !h-[30px]`}>
+                  <div
+                    className={`${styles.button} my-6 !h-[30px]`}
+                    onClick={handleSubmit}
+                  >
                     Submit
                   </div>
                 </div>
