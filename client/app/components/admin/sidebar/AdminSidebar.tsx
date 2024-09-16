@@ -195,7 +195,7 @@ const AdminSidebar = () => {
             </Typography>
             <Item
               title="Users"
-              to="/admin/users"
+              to="/admin/display-users"
               icon={<GroupsIcon className="text-black dark:text-white" />}
               selected={selected}
               setSelected={setSelected}
@@ -273,7 +273,7 @@ const AdminSidebar = () => {
             </Typography>
             <Item
               title="Manage Team"
-              to="/admin/team"
+              to="/admin/manage-team"
               icon={
                 <PeopleOutlinedIcon className="text-black dark:text-white" />
               }
