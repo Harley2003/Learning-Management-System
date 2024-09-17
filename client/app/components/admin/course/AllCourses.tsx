@@ -8,7 +8,10 @@ import { format } from "timeago.js";
 import { styles } from "@/app/styles/style";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
-import { useGetAllCoursesQuery } from "@/redux/features/courses/courseApi";
+import {
+  useDeleteCourseMutation,
+  useGetAllCoursesQuery
+} from "@/redux/features/courses/courseApi";
 import Loader from "../../loader/Loader";
 
 type Props = {};
@@ -18,8 +21,10 @@ const AllCourses: FC<Props> = (props) => {
   const [open, setOpen] = useState(false);
   const [courseId, setCourseId] = useState("");
   const { isLoading, data, refetch } = useGetAllCoursesQuery(
-    {}
+    {},
+    { refetchOnMountOrArgChange: true }
   );
+  const [deleteCourse, { isSuccess, error }] = useDeleteCourseMutation();
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
     { field: "name", headerName: "Name Course", flex: 1 },
@@ -79,6 +84,25 @@ const AllCourses: FC<Props> = (props) => {
       });
   }
 
+  useEffect(() => {
+    if (error) {
+      if ("data" in error) {
+        const errorMessage = error as any;
+        toast.error(errorMessage.data.message);
+      }
+    }
+
+    if (isSuccess) {
+      toast.success("Course deleted successfully");
+      refetch();
+      setOpen(false);
+    }
+  }, [error, isSuccess, refetch]);
+
+  const handleDelete = async () => {
+    await deleteCourse(courseId);
+  };
+
   return (
     <div className="mt-[120px]">
       {isLoading ? (
@@ -91,49 +115,49 @@ const AllCourses: FC<Props> = (props) => {
             sx={{
               "& .MuiDataGrid-root": {
                 border: "none",
-                outline: "none",
+                outline: "none"
               },
               "& .css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon": {
-                color: theme === "dark" ? "#fff" : "#000",
+                color: theme === "dark" ? "#fff" : "#000"
               },
               "& .MuiDataGrid-sortIcon": {
-                color: theme === "dark" ? "#fff" : "#000",
+                color: theme === "dark" ? "#fff" : "#000"
               },
               "& .MuiDataGrid-row": {
                 color: theme === "dark" ? "#fff" : "#000",
                 borderBottom:
                   theme === "dark"
                     ? "1px solid #ffffff30!important"
-                    : "1px solid #ccc!important",
+                    : "1px solid #ccc!important"
               },
               "& .MuiTablePagination-root": {
-                color: theme === "dark" ? "#fff" : "#000",
+                color: theme === "dark" ? "#fff" : "#000"
               },
               "& .MuiDataGrid-cell": {
-                borderBottom: "none!important",
+                borderBottom: "none!important"
               },
               "& .name-column--cell": {
-                color: theme === "dark" ? "#fff" : "#000",
+                color: theme === "dark" ? "#fff" : "#000"
               },
               "& .MuiDataGrid-columnHeaders": {
                 backgroundColor: theme === "dark" ? "#3e4396" : "#A4A9FC",
                 borderBottom: "none",
-                color: theme === "dark" ? "#fff" : "#000",
+                color: theme === "dark" ? "#fff" : "#000"
               },
               "& .MuiDataGrid-virtualScroller": {
-                backgroundColor: theme === "dark" ? "#1F2A40" : "#F2F0F0",
+                backgroundColor: theme === "dark" ? "#1F2A40" : "#F2F0F0"
               },
               "& .MuiDataGrid-footerContainer": {
                 color: theme === "dark" ? "#fff" : "#000",
                 borderTop: "none",
-                backgroundColor: theme === "dark" ? "#3e4396" : "#A4A9FC",
+                backgroundColor: theme === "dark" ? "#3e4396" : "#A4A9FC"
               },
               "& .MuiCheckbox-root": {
                 color:
-                  theme === "dark" ? `#b7ebde !important` : `#000 !important`,
+                  theme === "dark" ? `#b7ebde !important` : `#000 !important`
               },
               "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-                color: `#fff !important`,
+                color: `#fff !important`
               }
             }}
           >
@@ -159,6 +183,7 @@ const AllCourses: FC<Props> = (props) => {
                   </div>
                   <div
                     className={`${styles.button} !w-[120px] h-[30px] bg-[#d63f3f]`}
+                    onClick={handleDelete}
                   >
                     Delete
                   </div>
