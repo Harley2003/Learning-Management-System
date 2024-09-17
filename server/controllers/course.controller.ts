@@ -40,31 +40,44 @@ export const editCourse = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = req.body;
-      const thumbnail = data.thumbnail;
-      if (thumbnail) {
-        await cloudinary.v2.uploader.destroy(data.thumbnail.public_id);
 
-        const myCloud = await cloudinary.v2.uploader.upload(thumbnail, {
-          folder: "courses"
-        });
-        data.thumbnail = {
-          public_id: myCloud.public_id,
-          url: myCloud.secure_url
-        };
-      }
+      const thumbnail = data.thumbnail;
 
       const courseId = req.params.id;
 
+      const courseData = await CourseModel.findById(courseId) as any;
+
+      if (thumbnail && !thumbnail.startsWith("https")) {
+        await cloudinary.v2.uploader.destroy(courseData.thumbnail.public_id);
+
+        const myCloud = await cloudinary.v2.uploader.upload(thumbnail, {
+          folder: "courses",
+        });
+
+        data.thumbnail = {
+          public_id: myCloud.public_id,
+          url: myCloud.secure_url,
+        };
+      }
+
+      if (thumbnail.startsWith("https")) {
+        data.thumbnail = {
+          public_id: courseData?.thumbnail.public_id,
+          url: courseData?.thumbnail.url,
+        };
+      }
+
       const course = await CourseModel.findByIdAndUpdate(
         courseId,
-        { $set: data },
+        {
+          $set: data,
+        },
         { new: true }
       );
 
       res.status(201).json({
         success: true,
-        message: "Course updated successfully",
-        course
+        course,
       });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
