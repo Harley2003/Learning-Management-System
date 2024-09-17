@@ -25,10 +25,12 @@ const EditHero: FC<Props> = (props: Props) => {
       setSubTitle(data?.layout?.banner.subTitle);
       setImage(data?.layout?.banner?.image?.url);
     }
+
     if (isSuccess) {
       toast.success("Hero updated successfully!");
       refetch();
     }
+
     if (error) {
       if ("data" in error) {
         const errorData = error as any;
@@ -69,6 +71,8 @@ const EditHero: FC<Props> = (props: Props) => {
               src={image}
               alt=""
               className="object-contain 1100px:max-w-[90%] w-[90%] 1500px:max-w-[85%] h-[auto] z-[10]"
+              width={800}
+              height={500}
             />
             <input
               type="file"
