@@ -2,7 +2,7 @@
 
 import { FC, useEffect, useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import 'react-pro-sidebar/dist/css/styles.css';
+import "react-pro-sidebar/dist/css/styles.css";
 import { Box, IconButton, Typography } from "@mui/material";
 import {
   HomeOutlinedIcon,
@@ -27,7 +27,7 @@ import { useSelector } from "react-redux";
 import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "next-themes";
-// import Cookies from "js-cookie";
+import Cookies from "js-cookie";
 
 interface itemProps {
   title: string;
@@ -68,11 +68,11 @@ const AdminSidebar = () => {
     return null;
   }
 
-  // const logoutHandler = async () => {
-  //   Cookies.remove("accessToken");
-  //   Cookies.remove("refreshToken");
-  //   window.location.reload();
-  // };
+  const logoutHandler = async () => {
+    Cookies.remove("accessToken");
+    Cookies.remove("refreshToken");
+    window.location.reload();
+  };
 
   return (
     <Box
@@ -154,7 +154,7 @@ const AdminSidebar = () => {
                   style={{
                     cursor: "pointer",
                     borderRadius: "50%",
-                    border: "3px solid #5b6fe6",
+                    border: "3px solid #5b6fe6"
                   }}
                 />
               </Box>
@@ -273,7 +273,7 @@ const AdminSidebar = () => {
             </Typography>
             <Item
               title="Manage Team"
-              to="/admin/manage-team"
+              to="/admin/manager-team"
               icon={
                 <PeopleOutlinedIcon className="text-black dark:text-white" />
               }
@@ -290,7 +290,7 @@ const AdminSidebar = () => {
             </Typography>
             <Item
               title="Courses Analytics"
-              to="/admin/courses-analytics"
+              to="/admin/courses-analytic"
               icon={
                 <BarChartOutlinedIcon className="text-black dark:text-white" />
               }
@@ -299,7 +299,7 @@ const AdminSidebar = () => {
             />
             <Item
               title="Orders Analytics"
-              to="/admin/orders-analytics"
+              to="/admin/orders-analytic"
               icon={<MapOutlinedIcon className="text-black dark:text-white" />}
               selected={selected}
               setSelected={setSelected}
@@ -307,7 +307,7 @@ const AdminSidebar = () => {
 
             <Item
               title="Users Analytics"
-              to="/admin/users-analytics"
+              to="/admin/users-analytic"
               icon={
                 <ManageHistoryIcon className="text-black dark:text-white" />
               }
@@ -322,7 +322,7 @@ const AdminSidebar = () => {
             >
               {!isCollapsed && "Extras"}
             </Typography>
-            <div>
+            <div onClick={logoutHandler}>
               <Item
                 title="Logout"
                 to="/"
