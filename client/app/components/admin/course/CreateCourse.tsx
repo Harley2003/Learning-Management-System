@@ -82,7 +82,7 @@ const CreateCourse: FC<Props> = (props) => {
       totalVideos: courseContentData.length,
       benefits: formattedBenefits,
       prerequisites: formattedPrerequisites,
-      courseContent: formattedCourseContentData
+      courseData: formattedCourseContentData
     };
 
     setCourseData(data);
@@ -98,7 +98,7 @@ const CreateCourse: FC<Props> = (props) => {
   useEffect(() => {
     if (isSuccess) {
       toast.success("Course created successfully!");
-      redirect("/admin/all-courses");
+      redirect("/admin/display-courses");
     }
 
     if (error) {
