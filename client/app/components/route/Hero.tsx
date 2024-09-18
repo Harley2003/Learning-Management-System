@@ -7,7 +7,7 @@ import { useGetHeroDataQuery } from "@/redux/features/layout/layoutApi";
 type Props = {};
 
 const Hero: FC<Props> = (props) => {
-  const { data, refetch } = useGetHeroDataQuery("Banner", {});
+  const { data } = useGetHeroDataQuery("Banner", {});
   return (
     <div className="w-full flex items-center justify-center relative min-h-screen">
       <div className="absolute top-[100px] 1000px:top-[unset] 1500px:h-[700px] 1500px:w-[700px] 1100px:h-[600px] 1100px:w-[600px] h-[50vh] w-[50vh] hero_animation rounded-full bg-gradient-to-r from-blue-500 to-blue-600 animate-pulse left-20"></div>
