@@ -3,7 +3,7 @@ import DashboardHeader from "./DashboardHeader";
 import DashboardWidgets from "./widgets/DashboardWidgets";
 
 type Props = {
-  isDashboard: boolean;
+  isDashboard?: boolean;
 };
 
 const DashboardHero: FC<Props> = ({ isDashboard }) => {
