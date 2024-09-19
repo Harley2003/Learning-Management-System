@@ -1,25 +1,36 @@
 import Ratings from "@/app/utils/Ratings";
-import React, { FC } from "react";
-import { IoCheckmarkDoneOutline } from "react-icons/io5";
+import React, { FC, useState } from "react";
+import { IoCheckmarkDoneOutline, IoCloseOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { format } from "timeago.js";
 import CoursePlayer from "./../../utils/CoursePlayer";
 import { styles } from "@/app/styles/style";
 import Link from "next/link";
 import CourseContentList from "./CourseContentList";
+import CheckOutForm from "../payment/CheckOutForm";
+import { Elements } from "@stripe/react-stripe-js";
 
 type Props = {
   data: any;
+  stripePromise: string;
+  clientSecret: any;
 };
 
-const CourseDetails: FC<Props> = ({ data }) => {
+const CourseDetails: FC<Props> = ({
+  data,
+  stripePromise,
+  clientSecret
+}) => {
   const { user } = useSelector((state: any) => state.auth);
+  const [open, setOpen] = useState(false);
   const discountPercentenge =
     ((data?.estimatedPrice - data?.price) / data?.estimatedPrice) * 100;
   const discountPercentengePrice = discountPercentenge.toFixed(0);
   const isPurchased =
     user && user?.courses?.find((item: any) => item._id === data._id);
-  const handleOrder = () => {};
+  const handleOrder = () => {
+    setOpen(true);
+  };
   return (
     <div>
       <div className="w-[90%] 800px:w-[90%] m-auto py-5">
@@ -83,7 +94,7 @@ const CourseDetails: FC<Props> = ({ data }) => {
               <h1 className="text-[25px] font-Poppins font-[600] text-black dark:text-white">
                 Course Overview
               </h1>
-              <CourseContentList data={data?.courseData} isDemo={true}/>
+              <CourseContentList data={data?.courseData} isDemo={true} />
             </div>
             <br />
             <br />
@@ -194,6 +205,31 @@ const CourseDetails: FC<Props> = ({ data }) => {
           </div>
         </div>
       </div>
+      <>
+        {open && (
+          <div className="w-full h-screen bg-[#00000036] fixed top-0 left-0 z-50 flex items-center justify-center">
+            <div className="w-[500px] min-h-[500px] bg-white rounded-xl shadow p-3">
+              <div className="w-full flex justify-end">
+                <IoCloseOutline
+                  size={40}
+                  className="text-black cursor-pointer"
+                  onClick={() => setOpen(false)}
+                />
+              </div>
+              <div className="w-full">
+                {stripePromise && clientSecret && (
+                    <Elements stripe={stripePromise} options={{ clientSecret }}>
+                    <CheckOutForm
+                      setOpen={setOpen} 
+                      data={data}
+                    />
+                  </Elements>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </>
     </div>
   );
 };
