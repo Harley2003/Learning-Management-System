@@ -1,7 +1,6 @@
 import Ratings from "@/app/utils/Ratings";
 import React, { FC, useState } from "react";
 import { IoCheckmarkDoneOutline, IoCloseOutline } from "react-icons/io5";
-import { useSelector } from "react-redux";
 import { format } from "timeago.js";
 import CoursePlayer from "./../../utils/CoursePlayer";
 import { styles } from "@/app/styles/style";
@@ -9,6 +8,7 @@ import Link from "next/link";
 import CourseContentList from "./CourseContentList";
 import CheckOutForm from "../payment/CheckOutForm";
 import { Elements } from "@stripe/react-stripe-js";
+import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 
 type Props = {
   data: any;
@@ -16,12 +16,9 @@ type Props = {
   clientSecret: any;
 };
 
-const CourseDetails: FC<Props> = ({
-  data,
-  stripePromise,
-  clientSecret
-}) => {
-  const { user } = useSelector((state: any) => state.auth);
+const CourseDetails: FC<Props> = ({ data, stripePromise, clientSecret }) => {
+  const { data: dataUser } = useLoadUserQuery(undefined, {});
+  const user = dataUser?.user;
   const [open, setOpen] = useState(false);
   const discountPercentenge =
     ((data?.estimatedPrice - data?.price) / data?.estimatedPrice) * 100;
@@ -218,11 +215,8 @@ const CourseDetails: FC<Props> = ({
               </div>
               <div className="w-full">
                 {stripePromise && clientSecret && (
-                    <Elements stripe={stripePromise} options={{ clientSecret }}>
-                    <CheckOutForm
-                      setOpen={setOpen} 
-                      data={data}
-                    />
+                  <Elements stripe={stripePromise} options={{ clientSecret }}>
+                    <CheckOutForm setOpen={setOpen} data={data} />
                   </Elements>
                 )}
               </div>
