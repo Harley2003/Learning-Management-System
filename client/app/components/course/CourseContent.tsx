@@ -5,6 +5,7 @@ import Header from "../Header";
 import Heading from "./../../utils/Heading";
 import CourseContentList from "./CourseContentList";
 import CourseContentMedia from "./CourseContentMedia";
+import Footer from "../Footer";
 
 type Props = {
   id: string;
@@ -12,7 +13,9 @@ type Props = {
 };
 
 const CourseContent: FC<Props> = ({ id, user }) => {
-  const { data: contentData, isLoading, error } = useGetCourseContentQuery(id);
+  const { data: contentData, isLoading, error, refetch } = useGetCourseContentQuery(id, {
+    refetchOnMountOrArgChange: true
+  });
   const data = contentData?.content;
   const [activeVideo, setActiveVideo] = useState(0);
   const [open, setOpen] = useState(false);
@@ -23,13 +26,13 @@ const CourseContent: FC<Props> = ({ id, user }) => {
         <Loader />
       ) : (
         <div>
-          <Header
+          {/* <Header
             activeItem={1}
             open={open}
             setOpen={setOpen}
             route={route}
             setRoute={setRoute}
-          />
+          /> */}
           <div className="w-full grid 800px:grid-cols-10">
             <Heading
               title={data[activeVideo]?.title}
@@ -43,6 +46,7 @@ const CourseContent: FC<Props> = ({ id, user }) => {
                 activeVideo={activeVideo}
                 setActiveVideo={setActiveVideo}
                 user={user}
+                refetch={refetch}
               />
             </div>
             <div className="hidden 800px:block 800px:col-span-3">
