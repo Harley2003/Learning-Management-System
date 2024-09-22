@@ -361,7 +361,10 @@ const CommentItem = ({
         <div className="w-full flex">
           <span
             className="800px:pl-16 dark:text-[#ffffff83] text-[#000000b8] cursor-pointer mr-2"
-            onClick={() =>{ setReplyActive(!replyActive); setQuestionId(item._id);}}
+            onClick={() => {
+              setReplyActive(!replyActive);
+              setQuestionId(item._id);
+            }}
           >
             {!replyActive
               ? item.questionReplies.length !== 0
@@ -399,7 +402,9 @@ const CommentItem = ({
                     <div className="pl-2">
                       <div className="flex items-center">
                         <h5 className="text-[20px]">{item.user.name}</h5>
-                        <VscVerifiedFilled className="text-[#50c750] ml-2 text-[20px]"/>
+                        {item.user.role === "admin" && (
+                          <VscVerifiedFilled className="text-[#50c750] ml-2 text-[20px]" />
+                        )}
                       </div>
                       <p>{item.answer}</p>
                       <small className="text-[#ffffff83]">
