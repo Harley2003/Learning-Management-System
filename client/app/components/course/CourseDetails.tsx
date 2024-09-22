@@ -1,5 +1,5 @@
 import Ratings from "@/app/utils/Ratings";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { IoCheckmarkDoneOutline, IoCloseOutline } from "react-icons/io5";
 import { format } from "timeago.js";
 import CoursePlayer from "./../../utils/CoursePlayer";
@@ -15,21 +15,37 @@ import { VscVerifiedFilled } from "react-icons/vsc";
 
 type Props = {
   data: any;
+  setOpen: any;
+  setRoute: any;
   stripePromise: any;
-  clientSecret: any;
+  clientSecret: string;
 };
 
-const CourseDetails: FC<Props> = ({ data, stripePromise, clientSecret }) => {
+const CourseDetails: FC<Props> = ({
+  data,
+  setOpen: openAuthModal,
+  setRoute,
+  stripePromise,
+  clientSecret
+}) => {
   const { data: dataUser } = useLoadUserQuery(undefined, {});
-  const user = dataUser?.user;
+  const [user, setUser] = useState<any>();
   const [open, setOpen] = useState(false);
+  useEffect(() => {
+    setUser(dataUser?.user);
+  }, [dataUser]);
   const discountPercentenge =
     ((data?.estimatedPrice - data?.price) / data?.estimatedPrice) * 100;
   const discountPercentengePrice = discountPercentenge.toFixed(0);
   const isPurchased =
     user && user?.courses?.find((item: any) => item._id === data._id);
   const handleOrder = () => {
-    setOpen(true);
+    if (user) {
+      setOpen(true);
+    } else {
+      setRoute("Login");
+      openAuthModal(true);
+    }
   };
   return (
     <div>
