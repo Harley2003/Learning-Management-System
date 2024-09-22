@@ -381,12 +381,15 @@ export const addReview = CatchAsyncError(
 
       await course?.save();
 
-      const notification = {
-        title: "New Review Received",
-        message: `${req.user?.name} has given a review in ${course?.name}`
-      };
+      // 7 days
+      await redis.set(courseId, JSON.stringify(course), "EX", 604800);
 
       // create a notification
+      await NotificationModel.create({
+        user: req.user?._id,
+        title: "New Review Received",
+        message: `${req.user?.name} has given a review in ${course?.name}`
+      });
 
       res.status(200).json({
         success: true,
@@ -439,6 +442,9 @@ export const addReplyToReview = CatchAsyncError(
       review.commentReplies?.push(replyData);
 
       await course?.save();
+
+      // 7 days
+      await redis.set(courseId, JSON.stringify(course), "EX", 604800);
 
       res.status(200).json({
         success: true,
