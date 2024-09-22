@@ -48,7 +48,7 @@ const CheckOutForm: FC<Props> = ({ setOpen, data }) => {
   useEffect(() => {
     if (dataOrder) {
       setLoadUser(true);
-      redirect(`course-access/${data._id}`);
+      redirect(`/course-access/${data._id}`);
     }
 
     if (error) {

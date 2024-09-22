@@ -9,10 +9,13 @@ import CourseContentList from "./CourseContentList";
 import CheckOutForm from "../payment/CheckOutForm";
 import { Elements } from "@stripe/react-stripe-js";
 import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
+import Image from "next/image";
+import avatarDefault from "../../../public/assests/avatar.png";
+import { VscVerifiedFilled } from "react-icons/vsc";
 
 type Props = {
   data: any;
-  stripePromise: string;
+  stripePromise: any;
   clientSecret: any;
 };
 
@@ -122,11 +125,17 @@ const CourseDetails: FC<Props> = ({ data, stripePromise, clientSecret }) => {
                   <div key={index} className="w-full pb-4">
                     <div className="flex">
                       <div className="w-[50px] h-[50px]">
-                        <div className="w-[50px] h-[50px] bg-slate-600 rounded-[50px] flex items-center justify-center cursor-pointer">
-                          <h1 className="uppercase text-[18px] text-black dark:text-white">
-                            {item.user.name.slice(0, 2)}
-                          </h1>
-                        </div>
+                        <Image
+                          src={
+                            item?.user.avatar
+                              ? item?.user.avatar.url
+                              : avatarDefault
+                          }
+                          alt=""
+                          width={50}
+                          height={50}
+                          className="w-[50px] h-[50px] rounded-full object-cover"
+                        />
                       </div>
                       <div className="hidden 800px:block pl-2">
                         <div className="flex items-center">
@@ -149,6 +158,33 @@ const CourseDetails: FC<Props> = ({ data, stripePromise, clientSecret }) => {
                         <Ratings rating={data?.ratings} />
                       </div>
                     </div>
+                    {item.commentReplies.map((item: any, index: number) => (
+                      <div className="w-full flex 800px:ml-16 my-5" key={index}>
+                        <div className="w-[50px] h-[50px]">
+                          <Image
+                            src={
+                              item?.user.avatar
+                                ? item?.user.avatar.url
+                                : avatarDefault
+                            }
+                            alt=""
+                            width={50}
+                            height={50}
+                            className="w-[50px] h-[50px] rounded-full object-cover"
+                          />
+                        </div>
+                        <div className="pl-2">
+                          <div className="flex items-center">
+                            <h5 className="text-[20px]">{item.user.name}</h5>
+                            <VscVerifiedFilled className="text-[#0095F6] ml-2 text-[20px]" />
+                          </div>
+                          <p>{item.comment}</p>
+                          <small className="text-[#ffffff83]">
+                            {format(item.createdAt)} •
+                          </small>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )
               )}
