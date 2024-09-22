@@ -65,6 +65,8 @@ const CourseDetailsPage: FC<Props> = ({ id }) => {
           {stripePromise && (
             <CourseDetails
               data={data.course}
+              setOpen={setOpen}
+              setRoute={setRoute}
               stripePromise={stripePromise}
               clientSecret={clientSecret}
             />
