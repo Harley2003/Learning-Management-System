@@ -27,8 +27,8 @@ const EditFaq: FC<Props> = (props) => {
       setQuestions(data.layout.faq);
     }
     if (layoutSuccess) {
-      toast.success("FAQ updated successfully!");
       refetch();
+      toast.success("FAQ updated successfully");
     }
 
     if (error) {
