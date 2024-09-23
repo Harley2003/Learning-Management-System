@@ -9,6 +9,7 @@ import Header from "../components/Header";
 import Heading from "../utils/Heading";
 import { styles } from "../styles/style";
 import CourseCard from "../components/course/CourseCard";
+import Footer from "../components/Footer";
 
 type Props = {};
 
@@ -49,7 +50,7 @@ const Page: FC<Props> = (props) => {
       {isLoading ? (
         <Loader />
       ) : (
-        <div>
+        <>
           <Header
             route={route}
             setRoute={setRoute}
@@ -105,7 +106,8 @@ const Page: FC<Props> = (props) => {
                 <CourseCard item={item} key={index} />
               ))}
           </div>
-        </div>
+          <Footer />
+        </>
       )}
     </div>
   );
