@@ -10,13 +10,17 @@ import {
 import { redirect } from "next/navigation";
 import React, { FC, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import socketIO from "socket.io-client";
+const ENDPOINT = process.env.NEXT_PUBLIC_SOCKET_SERVER_URI || "";
+const socketIo = socketIO(ENDPOINT, { transports: ["websocket"] });
 
 type Props = {
   data: any;
   setOpen: any;
+  user?: any;
 };
 
-const CheckOutForm: FC<Props> = ({ setOpen, data }) => {
+const CheckOutForm: FC<Props> = ({ setOpen, data, user }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [message, setMessage] = useState("");
@@ -48,6 +52,11 @@ const CheckOutForm: FC<Props> = ({ setOpen, data }) => {
   useEffect(() => {
     if (dataOrder) {
       setLoadUser(true);
+      socketIo.emit("notification", {
+        title: "New Order",
+        message: `You have a new order from ${data.name}`,
+        userId: user._id
+      });
       redirect(`/course-access/${data._id}`);
     }
 
@@ -57,7 +66,8 @@ const CheckOutForm: FC<Props> = ({ setOpen, data }) => {
         toast.error(errorMessage.data.messsa);
       }
     }
-  }, [dataOrder, data._id, error, setLoadUser]);
+  }, [dataOrder, data._id, error, setLoadUser, data.name, user._id]);
+
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
       <LinkAuthenticationElement id="link-authentication-element" />
