@@ -7,6 +7,7 @@ type Props = {
   activeItem: any;
   component: any;
   setRoute?: (route: string) => void;
+  refetch?: any;
 };
 
 const CustomModal: FC<Props> = ({

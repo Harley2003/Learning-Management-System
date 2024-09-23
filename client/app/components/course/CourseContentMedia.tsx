@@ -21,6 +21,9 @@ import { format } from "timeago.js";
 import { BiMessage } from "react-icons/bi";
 import { VscVerifiedFilled } from "react-icons/vsc";
 import Ratings from "./../../utils/Ratings";
+import socketIO from "socket.io-client";
+const ENDPOINT = process.env.NEXT_PUBLIC_SOCKET_SERVER_URI || "";
+const socketIo = socketIO(ENDPOINT, { transports: ["websocket"] });
 
 type Props = {
   id: string;
@@ -126,6 +129,24 @@ const CourseContentMedia: FC<Props> = ({
       setQuestion("");
       refetch();
       toast.success("Question added successfully");
+      socketIo.emit("notification", {
+        title: "New Question Received",
+        message: `You have a new question in ${data[activeVideo].title}`,
+        userId: user._id
+      });
+    }
+
+    if (hasSuccess) {
+      setAnswer("");
+      refetch();
+      toast.success("Answer added successfully");
+      if (user.role !== "admin") {
+        socketIo.emit("notification", {
+          title: `New Reply Received`,
+          message: `You have a new question in ${data[activeVideo].title}`,
+          userId: user._id
+        });
+      }
     }
 
     if (canSuccess) {
@@ -134,17 +155,16 @@ const CourseContentMedia: FC<Props> = ({
       toast.success("Reply added successfully");
     }
 
-    if (hasSuccess) {
-      setAnswer("");
-      refetch();
-      toast.success("Answer added successfully");
-    }
-
     if (wasSuccess) {
       setReview("");
       setRating(0);
       isRefetch();
       toast.success("Review added successfully");
+      socketIo.emit("notification", {
+        title: `New Question Received`,
+        message: `You have a new question in ${data[activeVideo].title}`,
+        userId: user._id
+      });
     }
 
     if (error) {
@@ -184,7 +204,11 @@ const CourseContentMedia: FC<Props> = ({
     hasError,
     isRefetch,
     canSuccess,
-    canError
+    canError,
+    activeVideo,
+    data,
+    user._id,
+    user.role
   ]);
   return (
     <div className="w-[95%] 800px:w-[86%] py-4 m-auto">
@@ -419,7 +443,7 @@ const CourseContentMedia: FC<Props> = ({
                         </small>
                       </div>
                     </div>
-                    {user.role === "admin" && (
+                    {user.role === "admin" && item.commentReplies && (
                       <span
                         className={`${styles.label} !ml-10 cursor-pointer`}
                         onClick={() => {
@@ -430,7 +454,7 @@ const CourseContentMedia: FC<Props> = ({
                         Add Reply
                       </span>
                     )}
-                    {replyReview && (
+                    {replyReview && reviewId && (
                       <div className="w-full flex relative">
                         <input
                           type="text"

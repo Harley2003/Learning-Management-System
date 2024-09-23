@@ -17,6 +17,7 @@ import { signIn } from "next-auth/react";
 type Props = {
   setOpen: (open: boolean) => void;
   setRoute: (route: string) => void;
+  refetch?: any;
 };
 
 const schema = Yup.object().shape({
@@ -28,7 +29,7 @@ const schema = Yup.object().shape({
     .min(6, "Password must be at least 6 characters")
 });
 
-const Login: FC<Props> = ({ setRoute, setOpen }) => {
+const Login: FC<Props> = ({ setRoute, setOpen, refetch }) => {
   const [show, setShow] = useState(false);
   const [login, { isSuccess, error }] = useLoginMutation();
 
@@ -36,13 +37,14 @@ const Login: FC<Props> = ({ setRoute, setOpen }) => {
     if (isSuccess) {
       toast.success("Login successful");
       setOpen(false);
+      // refetch();
     }
 
     if (error && "data" in error) {
       const errorData = error as any;
       toast.error(errorData.data.message);
     }
-  }, [isSuccess, setOpen, error]);
+  }, [isSuccess, setOpen, error, refetch]);
 
   const formik = useFormik({
     initialValues: {
@@ -122,8 +124,16 @@ const Login: FC<Props> = ({ setRoute, setOpen }) => {
           Or join with
         </h5>
         <div className="flex items-center justify-center my-3">
-          <FcGoogle size={30} className="cursor-pointer mr-2" onClick={() => signIn("google")}/>
-          <AiFillGithub size={30} className="cursor-pointer ml-2 dark:text-white text-black" onClick={() => signIn("github")}/>
+          <FcGoogle
+            size={30}
+            className="cursor-pointer mr-2"
+            onClick={() => signIn("google")}
+          />
+          <AiFillGithub
+            size={30}
+            className="cursor-pointer ml-2 dark:text-white text-black"
+            onClick={() => signIn("github")}
+          />
         </div>
         <h5 className="text-center pt-4 font-Poppins text-[14px] dark:text-white text-black">
           Not have any account?{" "}
