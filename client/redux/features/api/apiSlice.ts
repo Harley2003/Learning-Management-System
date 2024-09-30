@@ -6,11 +6,11 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_SERVER_URL }),
   endpoints: (builder) => ({
     refreshToken: builder.query({
-      query: (data) => ({
+      query: () => ({
         url: "refresh-token",
         method: "GET",
         credentials: "include" as const
-      })
+      })  
     }),
     loadUser: builder.query({
       query: () => ({
@@ -24,6 +24,7 @@ export const apiSlice = createApi({
           dispatch(
             userLogin({
               accessToken: result.data.accessToken,
+              refreshToken: result.data.refreshToken,
               user: result.data.user
             })
           );

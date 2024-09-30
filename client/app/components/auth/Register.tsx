@@ -21,10 +21,14 @@ const schema = Yup.object().shape({
   name: Yup.string().required("Please enter your name!"),
   email: Yup.string()
     .email("Invalid email")
-    .required("Please enter your email!"),
-  password: Yup.string()
+    .required("Please enter your email!").trim(),
+    password: Yup.string()
     .required("Please enter your password!")
-    .min(6, "Password must be at least 6 characters")
+    .matches(/[A-Z]/, "Must contain at least one uppercase letter")
+    .matches(/[a-z]/, "Must contain at lowercase letter")
+    .matches(/[0-9]/, "Must contain at least one number")
+    .matches(/[!@#$%^&*]/, "Must contain at least one special character")
+    .min(8, "Password must be at least 8 characters").trim() 
 });
 
 const Register: FC<Props> = ({ setRoute }) => {
@@ -81,7 +85,7 @@ const Register: FC<Props> = ({ setRoute }) => {
             className={`${errors.name && touched.name && "border-red-500"} ${
               styles.input
             }`}
-            placeholder="johndoe"
+            placeholder=""
           />
           {errors.name && touched.name && (
             <span className="text-red-500 pt-2 block">{errors.name}</span>
@@ -100,7 +104,7 @@ const Register: FC<Props> = ({ setRoute }) => {
             className={`${errors.email && touched.email && "border-red-500"} ${
               styles.input
             }`}
-            placeholder="loginmail@gmail.com"
+            placeholder=""
           />
           {errors.email && touched.email && (
             <span className="text-red-500 pt-2 block">{errors.email}</span>
@@ -116,7 +120,7 @@ const Register: FC<Props> = ({ setRoute }) => {
             id="password"
             onChange={handleChange}
             value={values.password}
-            placeholder="password!@%"
+            placeholder=""
             className={`${
               errors.password && touched.password && "border-red-500"
             } ${styles.input}`}

@@ -4,7 +4,7 @@ import React, { FC, useState } from "react";
 import Heading from "../utils/Heading";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import FAQ from "../components/faq/FAQ";
+import FAQ from "./FAQ";
 
 
 type Props = {};
@@ -15,7 +15,7 @@ const Page: FC<Props> = (props) => {
   const [route, setRoute] = useState("Login");
 
   return (
-    <div className="min-h-screen">
+    <>
       <Heading
         title="FAQ - ELearning"
         description="ELearning is a platform for students to learn and get help from teachers"
@@ -30,7 +30,7 @@ const Page: FC<Props> = (props) => {
       />
       <FAQ/>
       <Footer />
-    </div>
+    </>
   );
 };
 

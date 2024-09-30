@@ -6,8 +6,8 @@ import OrderModel, { IOrder } from "../models/order.model";
 import NotificationModel from "../models/notification.model";
 import UserModel from "../models/user.model";
 import CourseModel from "../models/course.model";
-import ejs from "ejs";
-import path from "path";
+// import ejs from "ejs";
+// import path from "path";
 import sendMail from "../utils/sendMail";
 import { getAllOrderServices, newOrder } from "../services/order.service";
 import { redis } from './../utils/redis';
@@ -70,10 +70,10 @@ export const createOrder = CatchAsyncError(
         }
       };
 
-      const html = await ejs.renderFile(
-        path.join(__dirname, "../mails/order-confirmation.ejs"),
-        { order: mailData }
-      );
+      // const html = await ejs.renderFile(
+      //   path.join(__dirname, "../mails/order-confirmation.ejs"),
+      //   { order: mailData }
+      // );
 
       try {
         if (user) {

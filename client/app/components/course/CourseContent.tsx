@@ -1,11 +1,12 @@
+"use client";
+
 import { useGetCourseContentQuery } from "@/redux/features/courses/courseApi";
 import React, { FC, useState } from "react";
-import Loader from "../loader/Loader";
+import Loader from "../Loader/Loader";
 import Header from "../Header";
-import Heading from "./../../utils/Heading";
+import Heading from "../../utils/Heading";
 import CourseContentList from "./CourseContentList";
 import CourseContentMedia from "./CourseContentMedia";
-import Footer from "../Footer";
 
 type Props = {
   id: string;
@@ -25,14 +26,14 @@ const CourseContent: FC<Props> = ({ id, user }) => {
       {isLoading ? (
         <Loader />
       ) : (
-        <div>
-          {/* <Header
+        <>
+          <Header
             activeItem={1}
             open={open}
             setOpen={setOpen}
             route={route}
             setRoute={setRoute}
-          /> */}
+          />
           <div className="w-full grid 800px:grid-cols-10">
             <Heading
               title={data[activeVideo]?.title}
@@ -57,7 +58,7 @@ const CourseContent: FC<Props> = ({ id, user }) => {
               />
             </div>
           </div>
-        </div>
+        </>
       )}
     </>
   );

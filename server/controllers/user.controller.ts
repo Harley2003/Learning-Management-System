@@ -4,8 +4,8 @@ import UserModel, { IUser } from "../models/user.model";
 import ErrorHandler from "../utils/ErrorHandler";
 import { CatchAsyncError } from "../middleware/catchAsyncErrors";
 import jwt, { JwtPayload, Secret } from "jsonwebtoken";
-import ejs from "ejs";
-import path from "path";
+// import ejs from "ejs";
+// import path from "path";
 import sendMail from "../utils/sendMail";
 import {
   accessTokenOptions,
@@ -50,10 +50,10 @@ export const registrationUser = CatchAsyncError(
 
       const data = { user: { name: user.name }, activationCode };
 
-      const html = await ejs.renderFile(
-        path.join(__dirname, "../mails/activation-mail.ejs"),
-        data
-      );
+      // const html = await ejs.renderFile(
+      //   path.join(__dirname, "../mails/activation-mail.ejs"),
+      //   data
+      // );
 
       try {
         await sendMail({
@@ -69,7 +69,7 @@ export const registrationUser = CatchAsyncError(
           activationToken: activationToken.token
         });
       } catch (error: any) {
-        throw next(new ErrorHandler(error.message, 400));
+        return next(new ErrorHandler("Error sending activation email", 500));
       }
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
@@ -230,7 +230,7 @@ export const updateAccessToken = CatchAsyncError(
         { id: user._id },
         process.env.ACCESS_TOKEN as string,
         {
-          expiresIn: "5m"
+          expiresIn: "15m"
         }
       );
 
@@ -238,7 +238,7 @@ export const updateAccessToken = CatchAsyncError(
         { id: user._id },
         process.env.REFRESH_TOKEN as string,
         {
-          expiresIn: "3d"
+          expiresIn: "7d"
         }
       );
 
@@ -248,7 +248,8 @@ export const updateAccessToken = CatchAsyncError(
 
       res.cookie("refresh_token", refreshToken, refreshTokenOptions);
 
-      await redis.set(user._id as string, JSON.stringify(user), "EX", 604800); // 1 week
+      // 1 week
+      await redis.set(user._id as string, JSON.stringify(user), "EX", 604800);
 
       next();
     } catch (error: any) {
@@ -280,7 +281,7 @@ interface ISocialAuthBody {
 export const socialAuth = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { email, name, avatar, password } = req.body as ISocialAuthBody;
+      const { email, name, avatar } = req.body as ISocialAuthBody;
 
       const user = await UserModel.findOne({ email });
 
@@ -288,8 +289,7 @@ export const socialAuth = CatchAsyncError(
         const newUser = await UserModel.create({
           email,
           name,
-          avatar,
-          password
+          avatar
         });
         sendToken(newUser, 200, res);
       } else {
@@ -322,7 +322,14 @@ export const updateUserInfo = CatchAsyncError(
 
       await user?.save();
 
-      await redis.set(userId as string, JSON.stringify(user));
+      // await redis.set(userId as string, JSON.stringify(user));
+
+      try {
+        await redis.set(userId as string, JSON.stringify(user), "EX", 604800);
+        console.log("User data cached successfully in Redis!");
+      } catch (error) {
+        console.error("Error caching user data in Redis:", error);
+      }
 
       res.status(201).json({
         success: true,
@@ -424,7 +431,14 @@ export const updateProfilePicture = CatchAsyncError(
 
       await user?.save();
 
-      await redis.set(userId as string, JSON.stringify(user));
+      // await redis.set(userId as string, JSON.stringify(user));
+
+      try {
+        await redis.set(userId as string, JSON.stringify(user), "EX", 604800);
+        console.log("User data cached successfully in Redis!");
+      } catch (error) {
+        console.error("Error caching user data in Redis:", error);
+      }
 
       res.status(200).json({
         success: true,

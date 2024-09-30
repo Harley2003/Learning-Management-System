@@ -64,6 +64,8 @@ courseRouter.delete(
   deleteCourse
 );
 
-courseRouter.post("/getVdoCipherOTP", generateVideoUrl);
+courseRouter.post("/generateVideoUrl", generateVideoUrl); 
+
+// courseRouter.post("/getVdoCipherOTP", generateVideoUrl);
 
 export default courseRouter;

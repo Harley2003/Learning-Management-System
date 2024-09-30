@@ -1,17 +1,20 @@
+"use client";
+
 import Ratings from "@/app/utils/Ratings";
 import React, { FC, useEffect, useState } from "react";
 import { IoCheckmarkDoneOutline, IoCloseOutline } from "react-icons/io5";
 import { format } from "timeago.js";
-import CoursePlayer from "./../../utils/CoursePlayer";
+import CoursePlayer from "../../utils/CoursePlayer";
 import { styles } from "@/app/styles/style";
 import Link from "next/link";
 import CourseContentList from "./CourseContentList";
-import CheckOutForm from "../payment/CheckOutForm";
+import CheckOutForm from "../Payment/CheckOutForm";
 import { Elements } from "@stripe/react-stripe-js";
 import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 import Image from "next/image";
 import avatarDefault from "../../../public/assests/avatar.png";
 import { VscVerifiedFilled } from "react-icons/vsc";
+import { redirect } from "next/navigation";
 
 type Props = {
   data: any;
@@ -221,7 +224,7 @@ const CourseDetails: FC<Props> = ({
                 </h4>
               </div>
               <div className="flex items-center">
-                {isPurchased ? (
+                {isPurchased || dataUser?.user.role === "admin" ? (
                   <Link
                     href={`/course-access/${data._id}`}
                     className={`${styles.button} !w-[180px] my-3 font-Poppins cursor-pointer !bg-[crimson]`}

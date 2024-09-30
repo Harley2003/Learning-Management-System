@@ -1,7 +1,9 @@
+"use client";
+
 import { styles } from "@/app/styles/style";
 import Image from "next/image";
-import React, { FC, useState } from "react";
-import ReviewCard from "../review/ReviewCard";
+import React, { FC } from "react";
+import ReviewCard from "../Review/ReviewCard";
 
 type Props = {};
 
@@ -10,7 +12,7 @@ export const reviews = [
     name: "Ayat AlBqoor",
     avatar:
       "https://res.cloudinary.com/dkg6jv4l0/image/upload/v1683766549/1667644613514_qd12it.jpg",
-    profession: "Web developer | Nafith Logistics International,Jordan",
+    profession: "Web developer | Nafith Logistics International, Jordan",
     ratings: 4.5,
     comment:
       "Thanks for your amazing programming tutorial channel! Your teaching style is outstanding, and the quality of your tutorials is top-notch. Your ability to break down complex topics into manageable parts, and cover diverse programming languages and topics is truly impressive. The practical applications and real-world examples you incorporate reinforce the theoretical knowledge and provide valuable insights!"
@@ -31,7 +33,7 @@ export const reviews = [
     profession: "Full stack web developer | Turkey",
     ratings: 4.5,
     comment:
-      "I value your dedication, expertise, and excitement for teaching programming. E-Learning offers instruction in more than simply programming language and framework theory.The website offers a plethora of additional tech-related courses, but the one I chose really pleased me with its cost and caliber. E-Learning extensive course selection and excellent faculty make it the perfect place to expand your knowledge and skills in the technology industry."
+      "I value your dedication, expertise, and excitement for teaching programming. E-Learning offers instruction in more than simply programming language and framework theory. The website offers a plethora of additional tech-related courses, but the one I chose really pleased me with its cost and caliber. E-Learning extensive course selection and excellent faculty make it the perfect place to expand your knowledge and skills in the technology industry."
   },
   {
     name: "Imen Lakrib",
@@ -40,7 +42,7 @@ export const reviews = [
     profession: "Full stack web developer | Algeria",
     ratings: 4,
     comment:
-      "Your content is very special. The thing I liked the most is that the videos are so long, which means they cover everything in details. for that any person had beginner-level can complete an integrated project when he watches the videos. Thank you very much. Im very excited for the next videos Keep doing this amazing work"
+      "Your content is very special. The thing I liked the most is that the videos are so long, which means they cover everything in details. for that any person had beginner-level can complete an integrated project when he watches the videos. Thank you very much. Im very excited for the next videos Keep doing this amazing work."
   },
   {
     name: "Eshan Ahmed Ahad",
@@ -58,9 +60,10 @@ export const reviews = [
     profession: "Computer systems engineering student | Zimbabwe",
     ratings: 4,
     comment:
-      " E-Learning does a good job of explaining the concepts in a clear and concise way, and the examples are well-chosen. Overall, this is a valuable resource for anyone who is new to programming"
+      "E-Learning does a good job of explaining the concepts in a clear and concise way, and the examples are well-chosen. Overall, this is a valuable resource for anyone who is new to programming."
   }
 ];
+
 const Reviews: FC<Props> = (props) => {
   return (
     <div className="w-[90%] 800px:w-[85%] m-auto">
@@ -77,7 +80,7 @@ const Reviews: FC<Props> = (props) => {
           <h3 className={`${styles.title} 800px:!text-[40px]`}>
             Our Students Are <span className="text-gradient">Our Strength</span>
             <br />
-            See What Thay Say About Us
+            See What They Say About Us
           </h3>
           <br />
           <p className={styles.label}>
@@ -90,11 +93,16 @@ const Reviews: FC<Props> = (props) => {
         <br />
         <br />
       </div>
-      <div className="grid grid-cols-1 gap-[25px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-2 lg:gap-[25px] xl:grid-cols-2 xl:gap-[35px] mb-12 border-0 md:[&>:nth-child(6)]:!mt-[-40px]">
-        {reviews &&
-          reviews.map((item: any, index: number) => (
-            <ReviewCard item={item} key={index} />
-          ))}
+      <br />
+      <br />
+      <br />
+      <h1 className="text-center font-Poppins text-4xl font-bold mb-10 text-[#000] dark:text-white">
+      Student&apos;s <span className="text-gradient">Feedback</span>
+      </h1>
+      <div className="grid grid-cols-1 gap-[25px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-2 lg:gap-[25px] xl:grid-cols-2 xl:gap-[35px] mb-12">
+        {reviews.map((item: any, index: number) => (
+          <ReviewCard item={item} key={index} />
+        ))}
       </div>
     </div>
   );

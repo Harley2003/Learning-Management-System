@@ -3,9 +3,9 @@
 import React, { FC } from "react";
 import AdminProtected from "./../../../hooks/adminProtected";
 import Heading from "./../../../utils/Heading";
-import AdminSidebar from "./../../../components/admin/sidebar/AdminSidebar";
-import DashboardHeader from "./../../../components/admin/DashboardHeader";
-import EditCourse from "./../../../components/admin/course/EditCourse";
+import AdminSidebar from "../../../components/Admin/Sidebar/AdminSidebar";
+import DashboardHeader from "../../../components/Admin/DashboardHeader";
+import EditCourse from "../../../components/Admin/Course/EditCourse";
 
 type Props = {};
 

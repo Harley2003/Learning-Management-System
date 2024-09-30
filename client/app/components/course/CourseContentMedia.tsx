@@ -1,6 +1,8 @@
+"use client";
+
 import React, { FC, useEffect, useState } from "react";
-import CoursePlayer from "./../../utils/CoursePlayer";
-import { styles } from "./../../styles/style";
+import CoursePlayer from "../../utils/CoursePlayer";
+import { styles } from "../../styles/style";
 import {
   AiFillStar,
   AiOutlineArrowLeft,
@@ -20,7 +22,7 @@ import {
 import { format } from "timeago.js";
 import { BiMessage } from "react-icons/bi";
 import { VscVerifiedFilled } from "react-icons/vsc";
-import Ratings from "./../../utils/Ratings";
+import Ratings from "../../utils/Ratings";
 import socketIO from "socket.io-client";
 const ENDPOINT = process.env.NEXT_PUBLIC_SOCKET_SERVER_URI || "";
 const socketIo = socketIO(ENDPOINT, { transports: ["websocket"] });

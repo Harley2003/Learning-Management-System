@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 import DashboardHeader from "./DashboardHeader";
-import DashboardWidgets from "./widgets/DashboardWidgets";
+import DashboardWidgets from "./Widgets/DashboardWidgets";
 
 type Props = {
   isDashboard?: boolean;

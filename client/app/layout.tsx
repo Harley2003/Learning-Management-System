@@ -7,8 +7,9 @@ import { ThemeProvider } from "./utils/Theme-provider";
 import { Providers } from "./Provider";
 import { SessionProvider } from "next-auth/react";
 import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
-import Loader from "./components/loader/Loader";
+import Loader from "./components/Loader/Loader";
 import { useEffect } from "react";
+import { Pacifico } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import socketIO from "socket.io-client";
 const ENDPOINT = process.env.NEXT_PUBLIC_SOCKET_SERVER_URI || "";
@@ -26,6 +27,12 @@ const josefin = Josefin_Sans({
   variable: "--font-Josefin"
 });
 
+const cursive = Pacifico({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-Cursive"
+});
+
 export default function RootLayout({
   children
 }: Readonly<{
@@ -34,13 +41,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${poppins.variable} ${josefin.variable} !bg-white bg-no-repeat dark:bg-gradient-to-b dark:from-gray-900 dark:to-black duration-300`}
+        className={`${poppins.variable} ${josefin.variable} ${cursive.variable} !bg-white bg-no-repeat dark:bg-gradient-to-b dark:from-gray-900 dark:to-black duration-300`}
       >
         <Providers>
           <SessionProvider>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
               <Custom>
-                <div>{children}</div>
+                {children}
               </Custom>
               <Toaster position="top-center" reverseOrder={false} />
             </ThemeProvider>
@@ -55,9 +62,8 @@ const Custom: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isLoading } = useLoadUserQuery({});
 
   useEffect(() => {
-    socketIo.on("connection", () => {
-    });
+    socketIo.on("connection", () => {});
   }, []);
 
-  return <>{isLoading ? <Loader /> : <>{children}</>}</>;
+  return <>{isLoading ? <Loader /> : <div>{children}</div>}</>;
 };

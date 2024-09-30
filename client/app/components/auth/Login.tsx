@@ -22,22 +22,25 @@ type Props = {
 
 const schema = Yup.object().shape({
   email: Yup.string()
-    .email("Invalid email")
-    .required("Please enter your email!"),
+    .email("Please enter a valid email address.")
+    .required("Email is required.")
+    .trim(),
   password: Yup.string()
-    .required("Please enter your password!")
-    .min(6, "Password must be at least 6 characters")
+    .required("Password is required.")
+    .min(8, "Password must be at least 8 characters long.")
+    .trim()
 });
 
 const Login: FC<Props> = ({ setRoute, setOpen, refetch }) => {
   const [show, setShow] = useState(false);
   const [login, { isSuccess, error }] = useLoginMutation();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success("Login successful");
+      toast.success("Login successful!");
       setOpen(false);
-      // refetch();
+      refetch();
     }
 
     if (error && "data" in error) {
@@ -53,10 +56,13 @@ const Login: FC<Props> = ({ setRoute, setOpen, refetch }) => {
     },
     validationSchema: schema,
     onSubmit: async ({ email, password }) => {
+      setLoading(true); 
       try {
         await login({ email, password });
       } catch (error: any) {
         console.log("Login error: " + error);
+      } finally {
+        setLoading(false); 
       }
     }
   });
@@ -79,7 +85,7 @@ const Login: FC<Props> = ({ setRoute, setOpen, refetch }) => {
           className={`${errors.email && touched.email && "border-red-500"} ${
             styles.input
           }`}
-          placeholder="loginmail@gmail.com"
+          placeholder=""
         />
         {errors.email && touched.email && (
           <span className="text-red-500 pt-2 block">{errors.email}</span>
@@ -94,7 +100,7 @@ const Login: FC<Props> = ({ setRoute, setOpen, refetch }) => {
             id="password"
             onChange={handleChange}
             value={values.password}
-            placeholder="password!@%"
+            placeholder=""
             className={`${
               errors.password && touched.password && "border-red-500"
             } ${styles.input}`}
@@ -117,7 +123,14 @@ const Login: FC<Props> = ({ setRoute, setOpen, refetch }) => {
           <span className="text-red-500 pt-2 block">{errors.password}</span>
         )}
         <div className="w-full mt-5">
-          <input type="submit" value="Login" className={`${styles.button}`} />
+          <input
+            type="submit"
+            value={loading ? "Logging in..." : "Login"}
+            className={`${styles.button} ${
+              loading ? "cursor-not-allowed opacity-50" : ""
+            }`}
+            disabled={loading}
+          />
         </div>
         <br />
         <h5 className="text-center pt-4 font-Poppins text-[14px] text-black dark:text-white">

@@ -1,3 +1,5 @@
+"use client";
+
 import { styles } from "@/app/styles/style";
 import {
   useEditLayoutMutation,

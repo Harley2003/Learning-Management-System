@@ -1,8 +1,10 @@
+"use client";
+
 import React, { FC } from "react";
 import CoursePlayer from "../../../utils/CoursePlayer";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
-import { styles } from "./../../../styles/style";
-import Ratings from "./../../../utils/Ratings";
+import { styles } from "../../../styles/style";
+import Ratings from "../../../utils/Ratings";
 type Props = {
   active: number;
   setActive: (active: number) => void;
@@ -55,7 +57,7 @@ const CoursePreview: FC<Props> = ({
           <div
             className={`${styles.button} !w-[180px] my-3 font-Poppins !bg-[crimson] cursor-not-allowed`}
           >
-            Buy Now {courseData?.price}
+            Buy Now {courseData?.price + "$"}
           </div>
         </div>
         <div className="flex items-center">
@@ -145,7 +147,7 @@ const CoursePreview: FC<Props> = ({
         <div
           className="w-full 800px:w-[180px] flex items-center justify-center h-[40px] bg-[#37a39a] text-center text-[#fff] rounded mt-8 cursor-pointer"
           onClick={() => createCourse()}
-          
+
         >
           {isTrue ? "Edit" : "Create"}
         </div>

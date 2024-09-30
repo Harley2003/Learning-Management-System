@@ -1,3 +1,5 @@
+"use client";
+
 import React, { FC, useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, Button, Modal } from "@mui/material";
@@ -12,7 +14,7 @@ import {
   useDeleteCourseMutation,
   useGetAllCoursesQuery
 } from "@/redux/features/courses/courseApi";
-import Loader from "../../loader/Loader";
+import Loader from "../../Loader/Loader";
 
 type Props = {};
 
@@ -161,7 +163,7 @@ const AllCourses: FC<Props> = (props) => {
               }
             }}
           >
-            <DataGrid checkboxSelection rows={rows} columns={columns} />
+            <DataGrid rows={rows} columns={columns} />
           </Box>
           {open && (
             <Modal

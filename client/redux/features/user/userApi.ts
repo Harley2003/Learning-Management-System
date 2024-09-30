@@ -10,7 +10,7 @@ export const userApi = apiSlice.injectEndpoints({
         credentials: "include" as const
       })
     }),
-    editPrilfe: builder.mutation({
+    editProfilfe: builder.mutation({
       query: ({ name }) => ({
         url: "update-user-info",
         method: "PUT",
@@ -53,7 +53,7 @@ export const userApi = apiSlice.injectEndpoints({
 
 export const {
   useUpdateAvatarMutation,
-  useEditPrilfeMutation,
+  useEditProfilfeMutation,
   useUpdatePasswordMutation,
   useGetAllUsersQuery,
   useUpdateUserRoleMutation,

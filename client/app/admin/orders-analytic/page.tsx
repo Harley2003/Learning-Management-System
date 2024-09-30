@@ -2,9 +2,9 @@
 
 import React, { FC } from "react";
 import Heading from "./../../utils/Heading";
-import AdminSidebar from "./../../components/admin/sidebar/AdminSidebar";
-import DashboardHeader from "./../../components/admin/DashboardHeader";
-import OrdersAnalytic from './../../components/admin/analytics/OrdersAnalytic';
+import AdminSidebar from "../../components/Admin/Sidebar/AdminSidebar";
+import DashboardHeader from "../../components/Admin/DashboardHeader";
+import OrdersAnalytic from '../../components/Admin/Analytics/OrdersAnalytic';
 
 type Props = {};
 

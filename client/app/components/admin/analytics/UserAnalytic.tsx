@@ -1,3 +1,5 @@
+"use client";
+
 import { styles } from "@/app/styles/style";
 import { useGetUsersAnalyticsQuery } from "@/redux/features/analytics/analyticsApi";
 import React, { FC } from "react";
@@ -9,7 +11,7 @@ import {
   Tooltip,
   ResponsiveContainer
 } from "recharts";
-import Loader from "../../loader/Loader";
+import Loader from "../../Loader/Loader";
 
 type Props = {
   isDashboard?: boolean;

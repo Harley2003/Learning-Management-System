@@ -3,9 +3,9 @@
 import React, { FC } from "react";
 import AdminProtected from "./../../hooks/adminProtected";
 import Heading from "./../../utils/Heading";
-import AdminSidebar from "./../../components/admin/sidebar/AdminSidebar";
-import DashboardHero from "./../../components/admin/DashboardHero";
-import EditCategories from "./../../components/admin/customization/EditCategories";
+import AdminSidebar from "../../components/Admin/Sidebar/AdminSidebar";
+import DashboardHero from "../../components/Admin/DashboardHero";
+import EditCategories from "../../components/Admin/Customization/EditCategories";
 
 type Props = {};
 

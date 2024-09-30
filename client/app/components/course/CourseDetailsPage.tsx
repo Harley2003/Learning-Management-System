@@ -1,6 +1,8 @@
+"use client";
+
 import React, { FC, useEffect, useState } from "react";
-import Loader from "../loader/Loader";
-import Heading from "./../../utils/Heading";
+import Loader from "../Loader/Loader";
+import Heading from "../../utils/Heading";
 import Header from "../Header";
 import Footer from "../Footer";
 import CourseDetails from "./CourseDetails";
@@ -49,9 +51,9 @@ const CourseDetailsPage: FC<Props> = ({ id }) => {
       {isLoading ? (
         <Loader />
       ) : (
-        <div>
+        <>
           <Heading
-            title={data.course.name + "- ELearning"}
+            title={data.course.name + " - ELearning"}
             description="ELearning is a programming community which is developed by yang yang for helping programmers"
             keywords={data?.course?.tags}
           />
@@ -72,7 +74,7 @@ const CourseDetailsPage: FC<Props> = ({ id }) => {
             />
           )}
           <Footer />
-        </div>
+        </>
       )}
     </div>
   );
