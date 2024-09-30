@@ -1,3 +1,5 @@
+"use client";
+
 import { styles } from "@/app/styles/style";
 import { useActivationMutation } from "@/redux/features/auth/authApi";
 import React, { FC, useActionState, useEffect, useRef, useState } from "react";
@@ -19,7 +21,7 @@ type VerifyNumber = {
 const Verification: FC<Props> = ({ setRoute }) => {
   const { token } = useSelector((state: any) => state.auth);
   const [activation, { isSuccess, error }] = useActivationMutation();
-  const [invalidError, setInvalidError] = useState<boolean>(false);
+  const [invalidError, setInvalidError] = useState(false);
 
   useEffect(() => {
     if (isSuccess) {
@@ -28,8 +30,9 @@ const Verification: FC<Props> = ({ setRoute }) => {
     }
 
     if (error && "data" in error) {
-      const errorData = error as any;
-      toast.error(errorData.data.message);
+      toast.error(
+        "The OTP you entered is invalid. Please check and try again."
+      );
       setInvalidError(true);
     } else {
       console.log("An error occured: " + error);
@@ -61,18 +64,36 @@ const Verification: FC<Props> = ({ setRoute }) => {
     await activation({
       activation_token: token,
       activation_code: verificationNumber
-    })
+    });
   };
 
   const handlerInputChange = (index: number, value: string) => {
     setInvalidError(false);
-    const newVerifyNumber = { ...verifyNumber, [index]: value };
-    setVerifyNumber(newVerifyNumber);
 
-    if (value === "" && index > 0) {
-      inputRefs[index - 1].current?.focus();
-    } else if (value.length === 1 && index < 3) {
-      inputRefs[index + 1].current?.focus();
+    // Nếu giá trị dài hơn 1, chúng ta sẽ chia nó ra
+    if (value.length > 1) {
+      const newVerifyNumber: any = { ...verifyNumber };
+
+      value.split("").forEach((char, idx) => {
+        if (idx < 4) {
+          newVerifyNumber[idx] = char; // Gán từng ký tự vào verifyNumber
+          inputRefs[idx].current!.value = char; // Cập nhật giá trị input
+        }
+      });
+
+      setVerifyNumber(newVerifyNumber);
+
+      // Di chuyển ô input focus đến ô cuối cùng
+      inputRefs[Math.min(value.length, 3)].current?.focus();
+    } else {
+      const newVerifyNumber = { ...verifyNumber, [index]: value };
+      setVerifyNumber(newVerifyNumber);
+
+      if (value === "" && index > 0) {
+        inputRefs[index - 1].current?.focus();
+      } else if (value.length === 1 && index < 3) {
+        inputRefs[index + 1].current?.focus();
+      }
     }
   };
 

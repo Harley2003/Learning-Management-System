@@ -1,15 +1,16 @@
 "use client";
 
-import React, { FC } from "react";
+import React, {FC, useState} from "react";
 import Heading from "./../../utils/Heading";
 import AdminProtected from "./../../hooks/adminProtected";
-import AdminSidebar from "./../../components/admin/sidebar/AdminSidebar";
-import CreateCourse from "../../components/admin/course/CreateCourse";
-import DashboardHeader from "./../../components/admin/DashboardHeader";
+import AdminSidebar from "../../components/Admin/Sidebar/AdminSidebar";
+import CreateCourse from "../../components/Admin/Course/CreateCourse";
+import DashboardHeader from "../../components/Admin/DashboardHeader";
 
 type Props = {};
 
-const page: FC<Props> = (props) => {
+const Page: FC<Props> = (props) => {
+  const [open, setOpen] = useState(false);
   return (
     <div>
       <AdminProtected>
@@ -23,7 +24,7 @@ const page: FC<Props> = (props) => {
             <AdminSidebar />
           </div>
           <div className="w-[85%]">
-            <DashboardHeader />
+            <DashboardHeader open={open} setOpen={setOpen} />
             <CreateCourse />
           </div>
         </div>
@@ -32,4 +33,4 @@ const page: FC<Props> = (props) => {
   );
 };
 
-export default page;
+export default Page;

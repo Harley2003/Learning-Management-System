@@ -1,9 +1,9 @@
 "use client";
 
 import React, { FC } from "react";
-import AdminSidebar from "./../../components/admin/sidebar/AdminSidebar";
-import DashboardHero from "./../../components/admin/DashboardHero";
-import EditFaq from "./../../components/admin/customization/EditFaq";
+import AdminSidebar from "../../components/Admin/Sidebar/AdminSidebar";
+import DashboardHero from "../../components/Admin/DashboardHero";
+import EditFaq from "../../components/Admin/Customization/EditFaq";
 import AdminProtected from "./../../hooks/adminProtected";
 import Heading from "./../../utils/Heading";
 

@@ -1,9 +1,8 @@
 import Link from "next/link";
-import React from "react";
+import React, { FC } from "react";
+import { FaYoutube, FaInstagram, FaGithub } from 'react-icons/fa';
 
-type Props = {};
-
-const Footer = (props: Props) => {
+const Footer: FC = () => {
   return (
     <footer>
       <div className="border border-[#00000000e] dark:border-[#ffffff1e]" />
@@ -25,7 +24,7 @@ const Footer = (props: Props) => {
               </li>
               <li>
                 <Link
-                  href="/privacy-policy"
+                  href="/policy"
                   className="text-base text-black dark:text-gray-300 dark:hover:text-white"
                 >
                   Privacy Policy
@@ -79,26 +78,29 @@ const Footer = (props: Props) => {
             <ul className="space-y-4">
               <li>
                 <Link
-                  href=""
-                  className="text-base text-black dark:text-gray-300 dark:hover:text-white"
+                  href="https://youtube.com"
+                  className="flex items-center space-x-2 text-base text-black dark:text-gray-300 dark:hover:text-white"
                 >
-                  Youtube
+                  <FaYoutube size={20} />
+                  <span>YouTube</span>
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/"
-                  className="text-base text-black dark:text-gray-300 dark:hover:text-white"
+                  href="https://instagram.com"
+                  className="flex items-center space-x-2 text-base text-black dark:text-gray-300 dark:hover:text-white"
                 >
-                  Instagram
+                  <FaInstagram size={20} />
+                  <span>Instagram</span>
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/"
-                  className="text-base text-black dark:text-gray-300 dark:hover:text-white"
+                  href="https://github.com"
+                  className="flex items-center space-x-2 text-base text-black dark:text-gray-300 dark:hover:text-white"
                 >
-                  Github
+                  <FaGithub size={20} />
+                  <span>GitHub</span>
                 </Link>
               </li>
             </ul>
@@ -114,7 +116,7 @@ const Footer = (props: Props) => {
               Address: ......
             </p>
             <p className="text-base dark:text-gray-300 text-black dark:hover:text-white pb-2">
-             Mail Us: ......
+              Mail Us: ......
             </p>
           </div>
         </div>
@@ -122,6 +124,7 @@ const Footer = (props: Props) => {
         <p className="text-center dark:text-white text-black">
           Copyright © 2024 ELearning | All Rights Reserved
         </p>
+        <br />
       </div>
     </footer>
   );

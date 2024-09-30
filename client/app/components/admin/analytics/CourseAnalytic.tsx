@@ -1,3 +1,5 @@
+"use client";
+
 import React, { FC } from "react";
 import {
   BarChart,
@@ -9,7 +11,7 @@ import {
   LabelList
 } from "recharts";
 import { styles } from "@/app/styles/style";
-import Loader from "./../../loader/Loader";
+import Loader from "../../Loader/Loader";
 import { useGetCoursesAnalyticsQuery } from "@/redux/features/analytics/analyticsApi";
 
 type Props = {};

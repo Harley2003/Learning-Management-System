@@ -1,3 +1,5 @@
+"use client";
+
 import React, { FC, useEffect, useState } from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Box } from "@mui/material";
@@ -6,7 +8,7 @@ import { format } from "timeago.js";
 import { useGetAllUsersQuery } from "@/redux/features/user/userApi";
 import { AiOutlineMail } from "react-icons/ai";
 import { useGetAllCoursesQuery } from "@/redux/features/courses/courseApi";
-import Loader from "../../loader/Loader";
+import Loader from "../../Loader/Loader";
 import { useGetAllOrdersQuery } from "@/redux/features/orders/orderApi";
 
 type Props = {
@@ -147,10 +149,9 @@ const AllInvoices: FC<Props> = ({ isDashboard }) => {
             }}
           >
             <DataGrid
-              checkboxSelection={isDashboard ? false : true}
               rows={rows}
               columns={columns}
-              components={isDashboard ? {} : { Toolbar: GridToolbar }}
+              {...(!isDashboard && { components: { Toolbar: GridToolbar } })}
             />
           </Box>
         </Box>

@@ -1,3 +1,5 @@
+"use client";
+
 import React, { FC, useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, Button, Modal } from "@mui/material";
@@ -12,55 +14,65 @@ import {
   useGetAllUsersQuery,
   useUpdateUserRoleMutation
 } from "@/redux/features/user/userApi";
-import Loader from "../../loader/Loader";
+import Loader from "../../Loader/Loader";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 type Props = {
   isTeam?: boolean;
 };
 
-const AllCourses: FC<Props> = ({ isTeam }) => {
-  const { theme, setTheme } = useTheme();
+const AllUsers: FC<Props> = ({ isTeam }) => {
+  const { theme } = useTheme();
   const [active, setActive] = useState(false);
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("admin");
   const [open, setOpen] = useState(false);
   const [userId, setUserId] = useState("");
+  
   const { isLoading, data, refetch } = useGetAllUsersQuery(
     {},
     { refetchOnMountOrArgChange: true }
   );
-  const [updateUserRole, { isSuccess, error: isError }] =
+
+  const [updateUserRole, { isSuccess: updateSuccess, error: updateError }] =
     useUpdateUserRoleMutation();
-  const [deleteUser, { isSuccess: hasSuccess, error: hasError }] =
+  
+  const [deleteUser, { isSuccess: deleteSuccess, error: deleteError }] =
     useDeleteUserMutation();
 
-  useEffect(() => {
-    if (isError) {
-      if ("data" in isError) {
-        const errorMessage = isError as any;
-        toast.error(errorMessage.data.message);
+    useEffect(() => {
+      if (updateError) {
+        const error = updateError as FetchBaseQueryError; 
+        if ('data' in error && error.data) {
+          const errorMessage = (error.data as any)?.message || "Update failed.";
+          toast.error(errorMessage);
+        } else {
+          toast.error("An unexpected error occurred.");
+        }
       }
-    }
-
-    if (isSuccess) {
-      refetch();
-      toast.success("User role updated successfully");
-      setActive(false);
-    }
-
-    if (hasError) {
-      if ("data" in hasError) {
-        const errorMessage = hasError as any;
-        toast.error(errorMessage.data.message);
+    
+      if (updateSuccess) {
+        refetch();
+        toast.success("User role updated successfully");
+        setActive(false);
       }
-    }
-
-    if (hasSuccess) {
-      refetch();
-      toast.success("Delete user successfully");
-      setOpen(false);
-    }
-  }, [isError, isSuccess, hasError, hasSuccess, refetch]);
+    
+      if (deleteError) {
+        const error = deleteError as FetchBaseQueryError; 
+        if ('data' in error && error.data) {
+          const errorMessage = (error.data as any)?.message || "Delete failed.";
+          toast.error(errorMessage);
+        } else {
+          toast.error("An unexpected error occurred.");
+        }
+      }
+    
+      if (deleteSuccess) {
+        refetch();
+        toast.success("User deleted successfully");
+        setOpen(false);
+      }
+    }, [updateError, updateSuccess, deleteError, deleteSuccess, refetch]);
 
   const columns = [
     { field: "id", headerName: "ID", flex: 0.3 },
@@ -75,19 +87,17 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
       flex: 0.2,
       renderCell: (params: any) => {
         return (
-          <>
-            <Button
-              onClick={() => {
-                setOpen(!open);
-                setUserId(params.row.id);
-              }}
-            >
-              <AiOutlineDelete
-                className="dark:text-white text-black"
-                size={20}
-              />
-            </Button>
-          </>
+          <Button
+            onClick={() => {
+              setOpen(!open);
+              setUserId(params.row.id);
+            }}
+          >
+            <AiOutlineDelete
+              className="dark:text-white text-black"
+              size={20}
+            />
+          </Button>
         );
       }
     },
@@ -193,9 +203,9 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
                 color: theme === "dark" ? "#fff" : "#000"
               },
               "& .MuiDataGrid-columnHeaders": {
-                backgroundColor: theme === "dark" ? "#3e4396" : "#A4A9FC",
-                borderBottom: "none",
-                color: theme === "dark" ? "#fff" : "#000"
+              backgroundColor: theme === "dark" ? "#3e4396 !important" : "#A4A9FC !important",
+              borderBottom: "none !important",
+              color: theme === "dark" ? "#fff !important" : "#000 !important"
               },
               "& .MuiDataGrid-virtualScroller": {
                 backgroundColor: theme === "dark" ? "#1F2A40" : "#F2F0F0"
@@ -214,7 +224,7 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
               }
             }}
           >
-            <DataGrid checkboxSelection rows={rows} columns={columns} />
+            <DataGrid rows={rows} columns={columns} />
           </Box>
           {active && (
             <Modal
@@ -236,7 +246,7 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
                   <select
                     name=""
                     id=""
-                    className={`${styles.input} !mt-6`}
+                    className={`w-full text-black dark:text-white border rounded h-[40px] px-2 outline-none font-Poppins mt-6`}
                     onChange={(e: any) => setRole(e.target.value)}
                   >
                     <option value="admin">Admin</option>
@@ -288,4 +298,4 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
   );
 };
 
-export default AllCourses;
+export default AllUsers;

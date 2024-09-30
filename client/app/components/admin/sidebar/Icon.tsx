@@ -30,6 +30,5 @@ export {
   QuizIcon,
   WysiwygIcon,
   ManageHistoryIcon,
-  SettingsIcon,
   ExitToAppIcon
 };

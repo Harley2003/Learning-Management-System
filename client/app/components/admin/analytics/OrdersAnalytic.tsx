@@ -1,7 +1,9 @@
+"use client";
+
 import { styles } from "@/app/styles/style";
 import { useGetOrdersAnalyticsQuery } from "@/redux/features/analytics/analyticsApi";
 import React from "react";
-import Loader from "./../../loader/Loader";
+import Loader from "../../Loader/Loader";
 import {
   LineChart,
   Line,

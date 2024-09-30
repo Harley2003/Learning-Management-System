@@ -1,3 +1,5 @@
+"use client";
+
 import { styles } from "@/app/styles/style";
 import {
   useEditLayoutMutation,
@@ -8,7 +10,7 @@ import { toast } from "react-hot-toast";
 import { AiOutlineDelete } from "react-icons/ai";
 import { HiMinus, HiPlus } from "react-icons/hi";
 import { IoMdAddCircleOutline } from "react-icons/io";
-import Loader from "./../../loader/Loader";
+import Loader from "../../Loader/Loader";
 
 type Props = {};
 
@@ -16,6 +18,7 @@ const EditFaq: FC<Props> = (props) => {
   const { data, isLoading, refetch } = useGetHeroDataQuery("FAQ", {
     refetchOnMountOrArgChange: true
   });
+  
   const [editLayout, { isSuccess: layoutSuccess, error }] =
     useEditLayoutMutation();
 

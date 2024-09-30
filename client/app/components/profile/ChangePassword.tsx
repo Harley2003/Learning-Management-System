@@ -1,29 +1,67 @@
+"use client";
+
 import { styles } from "@/app/styles/style";
 import { useUpdatePasswordMutation } from "@/redux/features/user/userApi";
 import React, { FC, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
 
-type Props = {};
+const PasswordToggleIcon = ({
+  show,
+  toggle
+}: {
+  show: boolean;
+  toggle: () => void;
+}) => (
+  <div className="absolute bottom-[25px] right-3 cursor-pointer" onClick={toggle}>
+    {show ? <AiOutlineEye size={20} /> : <AiOutlineEyeInvisible size={20} />}
+  </div>
+);
 
-const ChangePassword: FC<Props> = (props) => {
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+const ChangePassword: FC = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [updatePassword, { isSuccess, error }] = useUpdatePasswordMutation();
+  const [updatePassword, { isSuccess, error, isLoading }] =
+    useUpdatePasswordMutation();
 
-  const handlerChangePassword = async (e: any) => {
-    e.preventDefault();
-    if (newPassword !== confirmPassword) {
-      toast.error("Password don't match!");
-    } else {
+  const initialValues = {
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: ""
+  };
+
+  const validationSchema = Yup.object().shape({
+    oldPassword: Yup.string().required("Old password is required"),
+    newPassword: Yup.string()
+      .required("Please enter your password!")
+      .matches(/[A-Z]/, "Must contain at least one uppercase letter")
+      .matches(/[a-z]/, "Must contain at least one lowercase letter")
+      .matches(/[0-9]/, "Must contain at least one number")
+      .matches(/[!@#$%^&*]/, "Must contain at least one special character")
+      .min(8, "New password must be at least 8 characters")
+      .trim(),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref("newPassword")], "Passwords must match")
+      .required("Confirm password is required")
+  });
+
+  const handlerChangePassword = async (values: any, { resetForm }: any) => {
+    const { oldPassword, newPassword } = values;
+
+    if (oldPassword === newPassword) {
+      toast.error("New password must be different from the old password!");
+      return;
+    }
+
+    try {
       await updatePassword({ oldPassword, newPassword });
-      setOldPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
+      toast.success("Password changed successfully!");
+      resetForm();
+    } catch (error) {
+      toast.error("An error occurred while changing the password.");
     }
   };
 
@@ -33,114 +71,108 @@ const ChangePassword: FC<Props> = (props) => {
     }
 
     if (error && "data" in error) {
-      const errorData = error as any;
-      toast.error(errorData.data.message);
+      const errorMessage = (error as any)?.data?.message || "An error occurred";
+      toast.error(errorMessage);
     }
   }, [isSuccess, error]);
 
   return (
-    <div className="w-full pl-7 px-2 800px:px-5 800px:pl-0">
-      <h1 className="block text-[25px] 800px:text-[30px] font-Poppins text-center font-[500] dark:text-[#fff] text-black pb-2">
+    <div className="w-full p-4 md:p-6 lg:p-8">
+      <h1 className="text-2xl font-Poppins text-center font-medium pb-2 text-black dark:text-white">
         Change Password
       </h1>
       <div className="w-full">
-        <form
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
           onSubmit={handlerChangePassword}
-          className="flex flex-col items-center"
         >
-          <div className="w-[100%] 800px:w-[60%] mt-5 relative">
-            <label
-              htmlFor="oldPassword"
-              className="block pb-2 dark:text-[#fff] text-black"
+          {({ handleSubmit }) => (
+            <Form
+              onSubmit={handleSubmit}
+              className="flex flex-col items-center"
             >
-              Enter your old password
-            </label>
-            <input
-              type={!showOldPassword ? "password" : "text"}
-              className={`${styles.input} !w-[95%] mb-4 800px:mb-0 dark:text-[#fff] text-black`}
-              required
-              value={oldPassword}
-              onChange={(e) => setOldPassword(e.target.value)}
-            />
-            {!showOldPassword ? (
-              <AiOutlineEyeInvisible
-                className="absolute bottom-3 right-[3.5rem] z-1 cursor-pointer"
-                size={20}
-                onClick={() => setShowOldPassword(true)}
-              />
-            ) : (
-              <AiOutlineEye
-                className="absolute bottom-3 right-[3.5rem] z-1 cursor-pointer"
-                size={20}
-                onClick={() => setShowOldPassword(false)}
-              />
-            )}
-          </div>
-          <div className="w-[100%] 800px:w-[60%] mt-2 relative">
-            <label
-              htmlFor="newPassword"
-              className="block pb-2 dark:text-[#fff] text-black"
-            >
-              Enter your new password
-            </label>
-            <input
-              type={!showNewPassword ? "password" : "text"}
-              className={`${styles.input} !w-[95%] mb-4 800px:mb-0 dark:text-[#fff] text-black`}
-              required
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-            {!showNewPassword ? (
-              <AiOutlineEyeInvisible
-                className="absolute bottom-3 right-[3.5rem] z-1 cursor-pointer"
-                size={20}
-                onClick={() => setShowNewPassword(true)}
-              />
-            ) : (
-              <AiOutlineEye
-                className="absolute bottom-3 right-[3.5rem] z-1 cursor-pointer"
-                size={20}
-                onClick={() => setShowNewPassword(false)}
-              />
-            )}
-          </div>
-          <div className="w-[100%] 800px:w-[60%] mt-2 relative">
-            <label
-              htmlFor="confirmPassword"
-              className="block pb-2 dark:text-[#fff] text-black"
-            >
-              Enter your confirm password
-            </label>
-            <input
-              type={!showConfirmPassword ? "password" : "text"}
-              className={`${styles.input} !w-[95%] mb-4 800px:mb-0 dark:text-[#fff] text-black`}
-              required
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-            {!showConfirmPassword ? (
-              <AiOutlineEyeInvisible
-                className="absolute bottom-3 right-[3.5rem] z-1 cursor-pointer"
-                size={20}
-                onClick={() => setShowConfirmPassword(true)}
-              />
-            ) : (
-              <AiOutlineEye
-                className="absolute bottom-3 right-[3.5rem] z-1 cursor-pointer"
-                size={20}
-                onClick={() => setShowConfirmPassword(false)}
-              />
-            )}
-          </div>
-          <div className="w-[100%] 800px:w-[60%] mt-2">
-            <input
-              type="submit"
-              value="Update"
-              className={`w-[95%] h-[40px] border border-[#37a39a] text-center dark:text-[#fff] text-black rounded-[3px] mt-8 cursor-pointer`}
-              required
-            />
-          </div>
-        </form>
+              <div className="w-full md:w-3/4 mt-5 relative">
+                <label
+                  htmlFor="oldPassword"
+                  className="block pb-2 text-black dark:text-white"
+                >
+                  Enter your old password
+                </label>
+                <Field
+                  type={!showOldPassword ? "password" : "text"}
+                  name="oldPassword"
+                  className={`${styles.input} w-full mb-4 text-black dark:text-white`}
+                />
+                <PasswordToggleIcon
+                  show={showOldPassword}
+                  toggle={() => setShowOldPassword(!showOldPassword)}
+                />
+              </div>
+              <ErrorMessage
+                  name="oldPassword"
+                  component="div"
+                  className="text-red-500 text-sm mb-2"
+                />
+
+              <div className="w-full md:w-3/4 mt-2 relative">
+                <label
+                  htmlFor="newPassword"
+                  className="block pb-2 text-black dark:text-white"
+                >
+                  Enter your new password
+                </label>
+                <Field
+                  type={!showNewPassword ? "password" : "text"}
+                  name="newPassword"
+                  className={`${styles.input} w-full mb-4 text-black dark:text-white`}
+                />
+                <PasswordToggleIcon
+                  show={showNewPassword}
+                  toggle={() => setShowNewPassword(!showNewPassword)}
+                />
+              </div>
+              <ErrorMessage
+                  name="newPassword"
+                  component="div"
+                  className="text-red-500 text-sm mb-2"
+                />
+
+              <div className="w-full md:w-3/4 mt-2 relative">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block pb-2 text-black dark:text-white"
+                >
+                  Confirm your new password
+                </label>
+                <Field
+                  type={!showConfirmPassword ? "password" : "text"}
+                  name="confirmPassword"
+                  className={`${styles.input} w-full mb-4 text-black dark:text-white`}
+                />
+                <PasswordToggleIcon
+                  show={showConfirmPassword}
+                  toggle={() => setShowConfirmPassword(!showConfirmPassword)}
+                />
+              </div>
+              <ErrorMessage
+                  name="confirmPassword"
+                  component="div"
+                  className="text-red-500 text-sm mb-2"
+                />
+
+              <div className="w-full md:w-3/4 mt-2">
+                <button
+                  type="submit"
+                  className={`w-full h-10 border border-[#37a39a] text-center dark:text-white text-black rounded mt-8 cursor-pointer`}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Updating..." : "Update"}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </div>
     </div>
   );

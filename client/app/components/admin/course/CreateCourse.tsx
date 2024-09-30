@@ -9,6 +9,7 @@ import CoursePreview from "./CoursePreview";
 import { useCreateCourseMutation } from "@/redux/features/courses/courseApi";
 import toast from "react-hot-toast";
 import { redirect } from "next/navigation";
+import Loader from "../../Loader/Loader";
 
 type Props = {};
 
@@ -63,8 +64,8 @@ const CreateCourse: FC<Props> = (props) => {
         videoUrl: courseContent.videoUrl,
         title: courseContent.title,
         description: courseContent.description,
-        videoLength: courseContent.videoLength,
         videoSection: courseContent.videoSection,
+        videoLength: courseContent.videoLength,
         links: courseContent.links.map((link) => ({
           title: link.title,
           url: link.url
@@ -102,7 +103,11 @@ const CreateCourse: FC<Props> = (props) => {
   useEffect(() => {
     if (isSuccess) {
       toast.success("Course created successfully!");
-      redirect("/admin/display-courses");
+      if (isLoading) {
+        <Loader />;
+      } else {
+        redirect("/admin/display-courses");
+      }
     }
 
     if (error) {
