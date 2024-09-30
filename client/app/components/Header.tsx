@@ -77,7 +77,7 @@ const Header: FC<Props> = ({open, setOpen, activeItem, route, setRoute}) => {
         }
 
         if (data === null && !isLoading && !userData) {
-            setLogout(true);
+            setLogout(false);
         }
     }, [data, isSuccess, socialAuth, userData, isLoading, refetch]);
 
