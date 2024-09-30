@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+      rel="stylesheet" />
+    <title>Order Confirmation</title>
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #4f5ef1;
+            border-radius: 12px;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .header h1 {
+            font-size: 26px;
+            margin: 0;
+        }
+        .header p {
+            font-size: 18px;
+        }
+        .course-info {
+            background-color: #ffffff;
+            color: #000;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .course-info h4 {
+            color: #4f5ef1;
+            text-align: center;
+            margin: 0 0 15px;
+        }
+        .order-details {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+        .order-details:last-child {
+            border-bottom: none;
+        }
+        .order-details span {
+            color: #666;
+        }
+        .item-table {
+            width: 100%;
+            margin: 15px 0;
+            border-collapse: collapse;
+        }
+        .item-table th, .item-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .item-table th {
+            background-color: #4f5ef1;
+            color: white;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #fff;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+        .footer a {
+            color: #ffdd57;
+            text-decoration: none;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            .header h1 {
+                font-size: 22px;
+            }
+            .header p {
+                font-size: 16px;
+            }
+        }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Your ELearning Order is Confirmed!</h1>
+        <p>We're thrilled to have you on board!</p>
+      </div>
+      <div class="course-info">
+        <h4>Order Summary</h4>
+        <div class="order-details">
+          <span>Order #: <%= order._id %></span>
+          <span>Order Date: <%= order.date %></span>
+        </div>
+        <table class="item-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Qty</th>
+              <th>Cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><%= order.name %></td>
+              <td>1</td>
+              <td>$<%= order.price %></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="order-details">
+          <span>Subtotal:</span>
+          <span>$<%= order.price %></span>
+        </div>
+        <div class="order-details">
+          <span>Total:</span>
+          <span>$<%= order.price %></span>
+        </div>
+      </div>
+      <div class="footer">
+        <p>If you have any questions, please contact our support team at <a
+            href="mailto:codewithyangyang@gmail.com">codewithyangyang@gmail.com</a></p>
+        <p>&copy; 2023 ELearning. All rights reserved.</p>
+      </div>
+    </div>
+  </body>
+</html>
