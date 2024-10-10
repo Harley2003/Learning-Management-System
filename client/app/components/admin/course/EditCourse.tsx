@@ -15,10 +15,7 @@ type Props = {
 };
 
 const EditCourse: FC<Props> = ({id}) => {
-    const {isLoading, data, refetch} = useGetAllCoursesQuery(
-        {},
-        {refetchOnMountOrArgChange: true}
-    );
+    const {isLoading, data} = useGetAllCoursesQuery(undefined);
     const editCourseData =
         data && data.courses.find((item: any) => item._id === id);
     useEffect(() => {

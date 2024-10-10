@@ -1,110 +1,127 @@
 require("dotenv").config();
-import mongoose, { Document, Model, Schema } from "mongoose";
+import mongoose, {Document, Model, Schema} from "mongoose";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import jwt from "jsonwebtoken";
 
 const emailRegexPattern: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export interface IUser extends Document {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  avatar: {
-    public_id: string;
-    url: string;
-  };
-  role: string;
-  isVerified: boolean;
-  courses: Array<{ courseId: string }>;
-  comparePassword: (password: string) => Promise<boolean>;
-  SignAccessToken: () => string;
-  SignRefreshToken: () => string;
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+    avatar: {
+        public_id: string;
+        url: string;
+    };
+    role: string;
+    isVerified: boolean;
+    courses: Array<{ courseId: string }>;
+    comparePassword: (password: string) => Promise<boolean>;
+    SignAccessToken: () => string;
+    SignRefreshToken: () => string;
+    createPasswordResetToken: () => string;
+    passwordResetToken?: string;
+    passwordResetExpires?: Date;
 }
 
 const userSchema: Schema<IUser> = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: [true, "Please enter your name"]
-    },
-    email: {
-      type: String,
-      required: [true, "Please enter your email"],
-      validate: {
-        validator: function (value: string) {
-          return emailRegexPattern.test(value);
+    {
+        name: {
+            type: String,
+            required: [true, "Please enter your name"]
         },
-        message: "please enter a valid email"
-      },
-      unique: true
+        email: {
+            type: String,
+            required: [true, "Please enter your email"],
+            validate: {
+                validator: function (value: string) {
+                    return emailRegexPattern.test(value);
+                },
+                message: "please enter a valid email"
+            },
+            unique: true
+        },
+        password: {
+            type: String,
+            // required: [true, "Please enter your password"],
+            minLength: [8, "Password should be greater than 8 characters"],
+            select: false
+        },
+        avatar: {
+            public_id: String,
+            url: String
+        },
+        role: {
+            type: String,
+            default: "user"
+        },
+        isVerified: {
+            type: Boolean,
+            default: false
+        },
+        courses: [
+            {
+                courseId: String
+            }
+        ],
+        passwordResetToken: String,
+        passwordResetExpires: Date
     },
-    password: {
-      type: String,
-      // required: [true, "Please enter your password"],
-      minLength: [6, "Password should be greater than 6 characters"],
-      select: false
-    },
-    avatar: {
-      public_id: String,
-      url: String
-    },
-    role: {
-      type: String,
-      default: "user"
-    },
-    isVerified: {
-      type: Boolean,
-      default: false
-    },
-    courses: [
-      {
-        courseId: String
-      }
-    ]
-  },
-  { timestamps: true }
+    {timestamps: true}
 );
 
 // hash password before saving
 userSchema.pre<IUser>("save", async function (next) {
-  if (!this.isModified("password")) {
-    next();
-  }
-  this.password = await bcrypt.hash(this.password, 10);
+    if (!this.isModified("password")) {
+        next();
+    }
+    this.password = await bcrypt.hash(this.password, 10);
 });
 
 // sign access token
 userSchema.methods.SignAccessToken = function () {
-  return jwt.sign(
-    {
-      id: this._id
-    },
-    process.env.ACCESS_TOKEN || "",
-    {
-      expiresIn: "5m"
-    }
-  );
+    return jwt.sign(
+        {
+            id: this._id
+        },
+        process.env.ACCESS_TOKEN || "",
+        {
+            expiresIn: "5m"
+        }
+    );
 };
 
 // sign refresh token
 userSchema.methods.SignRefreshToken = function () {
-  return jwt.sign(
-    {
-      id: this._id
-    },
-    process.env.REFRESH_TOKEN || "",
-    {
-      expiresIn: "3d"
-    }
-  );
+    return jwt.sign(
+        {
+            id: this._id
+        },
+        process.env.REFRESH_TOKEN || "",
+        {
+            expiresIn: "3d"
+        }
+    );
 };
 
 // compare password
 userSchema.methods.comparePassword = async function (
-  enteredPassword: string
+    enteredPassword: string
 ): Promise<boolean> {
-  return await bcrypt.compare(enteredPassword, this.password);
+    return await bcrypt.compare(enteredPassword, this.password);
+};
+
+// create password reset token
+userSchema.methods.createPasswordResetToken = function () {
+    const resetToken = crypto.randomBytes(20).toString("hex");
+
+    this.passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+    this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+
+    return resetToken;
 };
 
 const UserModel: Model<IUser> = mongoose.model("User", userSchema);

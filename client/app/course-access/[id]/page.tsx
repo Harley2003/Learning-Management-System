@@ -12,11 +12,10 @@ type Props = {
 
 const Page: FC<Props> = ({ params }) => {
   const id = params.id;
-  const { data, isLoading, error } = useLoadUserQuery(undefined, {});
+  const { data, isLoading, error } = useLoadUserQuery(undefined);
   useEffect(() => {
     if (error) {
       redirect("/");
-      return;
     }
 
     // if (data) {
@@ -24,7 +23,7 @@ const Page: FC<Props> = ({ params }) => {
     //     redirect(`/course-access/${id}`);
     //     return;
     //   }
-    //
+
     //   const isPurchased = data.user.courses.some((item: any) => item._id === id);
     //   if (!isPurchased) {
     //     redirect("/");

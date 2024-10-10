@@ -13,9 +13,8 @@ const CoursePlayer: FC<Props> = ({ videoUrl, title }) => {
   useEffect(() => {
     const fetchVideo = async () => {
       try {
-        // Send the full Vimeo URL to the backend
         const response = await axios.post(`http://localhost:8000/api/v1/generateVideoUrl`, {
-          videoUrl, // Send the full URL, not just the ID
+          videoUrl,
         });
         const { link } = response.data;
         setEmbedUrl(link);

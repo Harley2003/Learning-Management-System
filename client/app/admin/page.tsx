@@ -5,10 +5,12 @@ import Heading from "../utils/Heading";
 import AdminSidebar from "../components/Admin/Sidebar/AdminSidebar";
 import AdminProtected from "../hooks/adminProtected";
 import DashboardHero from "../components/Admin/DashboardHero";
+import {useLoadUserQuery} from "@/redux/features/api/apiSlice";
 
 type Props = {};
 
-const page: FC<Props> = (props) => {
+const Page: FC<Props> = (props) => {
+    const {data} = useLoadUserQuery(undefined);
     return (
         <div>
             <AdminProtected>
@@ -19,7 +21,7 @@ const page: FC<Props> = (props) => {
                 />
                 <div className="flex min-h-screen">
                     <div className="1500px:w-[16%] w-1/5">
-                        <AdminSidebar/>
+                        <AdminSidebar data={data}/>
                     </div>
                     <div className="w-[85%]">
                         <DashboardHero isDashboard={true}/>
@@ -30,4 +32,4 @@ const page: FC<Props> = (props) => {
     );
 };
 
-export default page;
+export default Page;

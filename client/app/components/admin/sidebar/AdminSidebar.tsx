@@ -6,7 +6,6 @@ import "react-pro-sidebar/dist/css/styles.css";
 import {Box, IconButton, Typography} from "@mui/material";
 import {
     HomeOutlinedIcon,
-    // ArrowForwardIosIcon,
     ArrowBackIosIcon,
     PeopleOutlinedIcon,
     ReceiptOutlinedIcon,
@@ -22,12 +21,12 @@ import {
     ExitToAppIcon
 } from "./Icon";
 import avatarDefault from "../../../../public/assests/avatar.png";
-import {useDispatch, useSelector} from "react-redux";
 import Link from "next/link";
 import Image from "next/image";
 import {useTheme} from "next-themes";
-import {signOut} from "next-auth/react";
-import {useLogoutQuery} from "@/redux/features/auth/authApi";
+import {useLogoutMutation} from "@/redux/features/auth/authApi";
+import {useRouter} from "next/navigation";
+import {useSelector} from "react-redux";
 
 interface ItemProps {
     title: string;
@@ -52,14 +51,17 @@ const Item: FC<ItemProps> = ({title, to, icon, selected, setSelected}) => (
     </MenuItem>
 );
 
-const AdminSidebar = () => {
-    const {user} = useSelector((state: any) => state.auth);
-    const [logout, setLogout] = useState(false);
+interface AdminSidebarProps {
+    data?: any;
+}
+
+const AdminSidebar: FC<AdminSidebarProps> = ({data}) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [selected, setSelected] = useState("Dashboard");
     const {theme} = useTheme();
-
-    useLogoutQuery(undefined, {skip: !logout});
+    const router = useRouter();
+    const {user} = useSelector((state: any) => state.auth);
+    const [logout] = useLogoutMutation();
 
     useEffect(() => {
         const handleResize = () => {
@@ -78,9 +80,12 @@ const AdminSidebar = () => {
     }, []);
 
     const logoutHandler = async () => {
-        setLogout(true);
-        await signOut();
-        window.location.href = "/"
+        try {
+            await logout().unwrap();
+            router.push("/");
+        } catch (error) {
+            console.error("Logout error:", error);
+        }
     };
 
     return (
@@ -249,36 +254,6 @@ const AdminSidebar = () => {
                             selected={selected}
                             setSelected={setSelected}
                         />
-
-                        {/* <Typography
-                variant="h5"
-                className="!text-[18px] text-black dark:text-[#ffffffc1] capitalize !font-[400]"
-                sx={{ m: "15px 0 5px 20px" }}
-              >
-                {!isCollapsed && "Customization"}
-              </Typography>
-              <Item
-                title="Hero"
-                to="/admin/hero"
-                icon={<WebIcon />}
-                selected={selected}
-                setSelected={setSelected}
-              />
-              <Item
-                title="FAQ"
-                to="/admin/faq"
-                icon={<QuizIcon />}
-                selected={selected}
-                setSelected={setSelected}
-              />
-              <Item
-                title="Categories"
-                to="/admin/categories"
-                icon={<WysiwygIcon />}
-                selected={selected}
-                setSelected={setSelected}
-              /> */}
-
                         <Typography
                             variant="h6"
                             className="!text-[18px] text-black dark:text-[#ffffffc1] capitalize !font-[400]"
@@ -293,21 +268,6 @@ const AdminSidebar = () => {
                             selected={selected}
                             setSelected={setSelected}
                         />
-                        {/* <Item
-                title="Orders Analytics"
-                to="/admin/orders-analytic"
-                icon={<MapOutlinedIcon />}
-                selected={selected}
-                setSelected={setSelected}
-              />
-              <Item
-                title="Users Analytics"
-                to="/admin/users-analytic"
-                icon={<ManageHistoryIcon />}
-                selected={selected}
-                setSelected={setSelected}
-              /> */}
-
                         <Typography
                             variant="h6"
                             className="!text-[18px] text-black dark:text-[#ffffffc1] capitalize !font-[400]"

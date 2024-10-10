@@ -4,20 +4,17 @@ import React, {FC, useEffect, useState} from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {HiOutlineMenuAlt3, HiOutlineUserCircle} from "react-icons/hi";
-import {useSession} from "next-auth/react";
 import NavItems from "../utils/NavItems";
 import ThemeSwitcher from "../utils/ThemeSwitcher";
 import CustomModal from "../utils/CustomModal";
 import Login from "./Auth/Login";
 import Register from "./Auth/Register";
 import Verification from "./Auth/Verification";
-import {
-    useLogoutQuery,
-    useSocialAuthMutation
-} from "@/redux/features/auth/authApi";
 import {useLoadUserQuery} from "@/redux/features/api/apiSlice";
 import avatarDefault from "../../public/assests/avatar.png";
-import toast from "react-hot-toast";
+import {useSelector} from "react-redux";
+import ForgetPassword from "@/app/components/Auth/ForgetPassword";
+import ResetPassword from "@/app/components/Auth/ResetPassword";
 
 type Props = {
     open: boolean;
@@ -30,18 +27,8 @@ type Props = {
 const Header: FC<Props> = ({open, setOpen, activeItem, route, setRoute}) => {
     const [active, setActive] = useState(false);
     const [openSidebar, setOpenSidebar] = useState(false);
-    const {
-        data: userData,
-        isLoading,
-        refetch
-    } = useLoadUserQuery(undefined);
-    const {data} = useSession();
-    const [socialAuth, {isSuccess}] = useSocialAuthMutation();
-    const [logout, setLogout] = useState(false);
-
-    useLogoutQuery(undefined, {
-        skip: !logout ? true : false
-    });
+    const {user} = useSelector((state: any) => state.auth);
+    useLoadUserQuery(undefined);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -55,31 +42,6 @@ const Header: FC<Props> = ({open, setOpen, activeItem, route, setRoute}) => {
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
-
-    useEffect(() => {
-        if (!isLoading) {
-            if (!userData) {
-                if (data) {
-                    socialAuth({
-                        email: data?.user?.email,
-                        name: data?.user?.name,
-                        avatar: data?.user?.image
-                    });
-                    refetch();
-                }
-            }
-        }
-
-        if (data === null) {
-            if (isSuccess) {
-                toast.success("Login with social successful");
-            }
-        }
-
-        if (data === null && !isLoading && !userData) {
-            setLogout(false);
-        }
-    }, [data, isSuccess, socialAuth, userData, isLoading, refetch]);
 
     const handleClose = (event: any) => {
         if (event.target.id === "screen") {
@@ -111,13 +73,13 @@ const Header: FC<Props> = ({open, setOpen, activeItem, route, setRoute}) => {
                             <ThemeSwitcher/>
                             {/* Avatar hiển thị theo responsive */}
                             <div className="hidden 800px:block">
-                                {userData && userData.user ? (
+                                {user ? (
                                     <Link href={"/profile"}>
                                         <Image
                                             priority={true}
                                             src={
-                                                userData.user.avatar
-                                                    ? userData.user.avatar.url
+                                                user.avatar
+                                                    ? user.avatar.url
                                                     : avatarDefault
                                             }
                                             alt="User Avatar"
@@ -158,19 +120,19 @@ const Header: FC<Props> = ({open, setOpen, activeItem, route, setRoute}) => {
                         <div
                             className="w-[70%] fixed z-[999999999] h-screen bg-white dark:bg-slate-900 dark:bg-opacity-90 top-0 right-0">
                             <NavItems activeItem={activeItem} isMobile={true}/>
-                            {userData && userData.user ? (
+                            {user ? (
                                 <Link href={"/profile"}>
                                     <Image
                                         priority={true}
                                         src={
-                                            userData.user.avatar
-                                                ? userData.user.avatar.url
+                                            user.avatar
+                                                ? user.avatar.url
                                                 : avatarDefault
                                         }
                                         alt="User Avatar"
                                         width={30}
                                         height={30}
-                                        className="h-[30px] w-[30px] rounded-full ml-[20px] cursor-pointer"
+                                        className="h-[30px] w-[30px] rounded-full cursor-pointer ml-[20px]"
                                         style={{
                                             border: activeItem === 5 ? "2px solid #37a39a" : "none"
                                         }}
@@ -193,22 +155,22 @@ const Header: FC<Props> = ({open, setOpen, activeItem, route, setRoute}) => {
                 )}
             </div>
             {
-                ["Login", "Register", "Verification"].includes(route) && open && (
+                ["Login", "Register", "Verification", "ForgetPassword", "ResetPassword"].includes(route) && open && (
                     <CustomModal
-                        refetch={refetch}
                         open={open}
                         activeItem={activeItem}
                         setOpen={setOpen}
                         setRoute={setRoute}
                         component={
-                            route === "Login"
-                                ? Login
-                                : route === "Register"
-                                    ? Register
-                                    : Verification
+                            route === "Login" ? Login :
+                                route === "Register" ? Register :
+                                    route === "Verification" ? Verification :
+                                        route === "ForgetPassword" ? ForgetPassword :
+                                            ResetPassword
                         }
                     />
-                )}
+                )
+            }
         </div>
     );
 };

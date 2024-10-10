@@ -31,7 +31,7 @@ const CourseDetails: FC<Props> = ({
   stripePromise,
   clientSecret
 }) => {
-  const { data: dataUser } = useLoadUserQuery(undefined, {});
+  const { data: dataUser } = useLoadUserQuery(undefined);
   const [user, setUser] = useState<any>();
   const [open, setOpen] = useState(false);
   useEffect(() => {
@@ -223,7 +223,7 @@ const CourseDetails: FC<Props> = ({
                   {discountPercentengePrice + "% Off"}
                 </h4>
               </div>
-              <div className="flex items-center">
+              <div className="flex items-center mt-[10px]">
                 {isPurchased || dataUser?.user.role === "admin" ? (
                   <Link
                     href={`/course-access/${data._id}`}

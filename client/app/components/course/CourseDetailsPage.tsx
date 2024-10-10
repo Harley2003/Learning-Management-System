@@ -22,7 +22,7 @@ const CourseDetailsPage: FC<Props> = ({ id }) => {
   const [route, setRoute] = useState("Login");
   const [open, setOpen] = useState(false);
   const { data, isLoading } = useGetCourseDetailsQuery(id);
-  const { data: config } = useGetStripePublishablekeyQuery({});
+  const { data: config } = useGetStripePublishablekeyQuery(undefined);
   const [stripePromise, setStripePromise] = useState<any>(null);
   const [clientSecret, setClientSecret] = useState("");
   const { data: userData } = useLoadUserQuery(undefined, {});
