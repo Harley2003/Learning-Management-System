@@ -1,6 +1,6 @@
 "use client";
 
-import React, {FC, useEffect, useState} from "react";
+import React, {FC, useCallback, useEffect, useState} from "react";
 import CoursePlayer from "../../utils/CoursePlayer";
 import {styles} from "../../styles/style";
 import {
@@ -49,40 +49,37 @@ const CourseContentMedia: FC<Props> = ({
     const [question, setQuestion] = useState("");
     const [rating, setRating] = useState(0);
     const [review, setReview] = useState("");
+    const [addNewQuestion, {isSuccess, isLoading: questionLoading, error}] =
+        useAddNewQuestionMutation();
+    const [
+        addAnswerInQuestion,
+        {isSuccess: hasSuccess, isLoading: answerLoading, error: isError}
+    ] = useAddAnswerInQuestionMutation();
+    const [
+        addReviewInCourse,
+        {isSuccess: wasSuccess, isLoading: reviewLoading, error: hasError}
+    ] = useAddReviewInCourseMutation();
+    const {data: courseData, refetch: isRefetch} = useGetCourseDetailsQuery(
+        id,
+        {
+            refetchOnMountOrArgChange: true
+        }
+    );
+    const [
+        addReplyReviewInCourse,
+        {isSuccess: canSuccess, isLoading: replyReviewLoading, error: canError}
+    ] = useAddReplyReviewInCourseMutation();
+    const course = courseData?.course;
     const [answer, setAnswer] = useState("");
     const [answerId, setAnswerId] = useState("");
     const [questionId, setQuestionId] = useState("");
     const [replyReview, setReplyReview] = useState(false);
     const [reply, setReply] = useState("");
     const [reviewId, setReviewId] = useState("");
-    const [
-        addNewQuestion,
-        {isSuccess, isLoading: questionLoading, error}
-    ] = useAddNewQuestionMutation();
+    const isReviewExists = course?.reviews?.find(
+        (item: any) => item.user._id === user._id
+    );
 
-    const [
-        addAnswerInQuestion,
-        {isSuccess: hasSuccess, isLoading: answerLoading, error: isError}
-    ] = useAddAnswerInQuestionMutation();
-
-    const [
-        addReviewInCourse,
-        {isSuccess: wasSuccess, isLoading: reviewLoading, error: hasError}
-    ] = useAddReviewInCourseMutation();
-
-    const [
-        addReplyReviewInCourse,
-        {isSuccess: canSuccess, isLoading: replyReviewLoading, error: canError}
-    ] = useAddReplyReviewInCourseMutation();
-
-    const {data: courseData, refetch: isRefetch} = useGetCourseDetailsQuery(id, {
-        refetchOnMountOrArgChange: true
-    });
-
-    const course = courseData?.course;
-    const isReviewExists = course?.reviews?.some((item: any) => item.user._id === user._id);
-
-    // Helper functions for handling submissions
     const showToastSuccess = (message: string) => toast.success(message);
     const showToastError = (message: string) => toast.error(message);
 
@@ -95,12 +92,12 @@ const CourseContentMedia: FC<Props> = ({
         }
     };
 
-    const handleError = (error: any) => {
+    const handleError = useCallback((error: any) => {
         if (error && "data" in error) {
             const errorMessage = error as any;
             showToastError(errorMessage.data.message);
         }
-    };
+    }, []);
 
     const handleQuestion = async () => {
         if (!question) {
@@ -110,7 +107,7 @@ const CourseContentMedia: FC<Props> = ({
                 question,
                 courseId: id,
                 contentId: data[activeVideo]._id
-            }, "Question added successfully");
+            }, "Question added successfully!");
         }
     };
 
@@ -120,14 +117,18 @@ const CourseContentMedia: FC<Props> = ({
             courseId: id,
             contentId: data[activeVideo]._id,
             questionId: questionId
-        }, "Answer added successfully");
+        }, "Answer added successfully!");
     };
 
     const handleSubmitReview = async () => {
         if (!review) {
             showToastError("Review can't be empty!");
         } else {
-            await handleSubmit(addReviewInCourse, {review, rating, courseId: id}, "Review added successfully");
+            await handleSubmit(addReviewInCourse, {
+                review,
+                rating,
+                courseId: id
+            }, "Review successfully!");
         }
     };
 
@@ -141,13 +142,14 @@ const CourseContentMedia: FC<Props> = ({
                 comment: reply,
                 courseId: id,
                 reviewId: reviewId
-            }, "Reply added successfully");
+            }, "Reply review successfully!");
         }
     };
 
     useEffect(() => {
         if (isSuccess || hasSuccess || wasSuccess || canSuccess) {
             refetch();
+            isRefetch();
         }
 
         if (isSuccess) {
@@ -199,7 +201,9 @@ const CourseContentMedia: FC<Props> = ({
         activeVideo,
         data,
         user._id,
-        user.role
+        user.role,
+        handleError,
+        isRefetch
     ]);
 
     return (
@@ -344,7 +348,7 @@ const CourseContentMedia: FC<Props> = ({
             {activeBar === 3 && (
                 <div className="w-full">
                     <>
-                        {!isReviewExists && (
+                        {!isReviewExists && user.role === "user" && (
                             <>
                                 <div className="flex w-full">
                                     <Image
@@ -438,35 +442,7 @@ const CourseContentMedia: FC<Props> = ({
                                                 </small>
                                             </div>
                                         </div>
-                                        {user.role === "admin" && item.commentReplies && (
-                                            <span
-                                                className={`${styles.label} !ml-10 cursor-pointer`}
-                                                onClick={() => {
-                                                    setReplyReview(true);
-                                                    setReviewId(item._id);
-                                                }}
-                                            >
-                        Add Reply
-                      </span>
-                                        )}
-                                        {replyReview && reviewId && (
-                                            <div className="w-full flex relative">
-                                                <input
-                                                    type="text"
-                                                    placeholder="Enter your reply..."
-                                                    value={reply}
-                                                    onChange={(e: any) => setReply(e.target.value)}
-                                                    className="block 800px:ml-12 mt-2 outline-none bg-transparent border-b border-[#000] dark:border-[#fff] p-[5px] w-[95%]"
-                                                />
-                                                <button
-                                                    type="submit"
-                                                    className="absolute right-0 bottom-1"
-                                                    onClick={handleSubmitReplyReview}
-                                                >
-                                                    Submit
-                                                </button>
-                                            </div>
-                                        )}
+
                                         {item.commentReplies.map((item: any, index: number) => (
                                             <div className="w-full flex 800px:ml-16 my-5" key={index}>
                                                 <div className="w-[50px] h-[50px]">
@@ -494,6 +470,36 @@ const CourseContentMedia: FC<Props> = ({
                                                 </div>
                                             </div>
                                         ))}
+                                        {user.role === "admin" && item.commentReplies && (
+                                            <span
+                                                className={`${styles.label} !ml-10 !pl-3 cursor-pointer`}
+                                                onClick={() => {
+                                                    setReplyReview(true);
+                                                    setReviewId(item._id);
+                                                    setReply("");
+                                                }}
+                                            >
+                                        Add Reply
+                                            </span>
+                                        )}
+                                        {replyReview && reviewId === item._id && (
+                                            <div className="w-full flex relative">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Enter your reply..."
+                                                    value={reply}
+                                                    onChange={(e: any) => setReply(e.target.value)}
+                                                    className="block 800px:ml-12 mt-2 outline-none bg-transparent border-b border-[#000] dark:border-[#fff] p-[5px] w-[95%]"
+                                                />
+                                                <button
+                                                    type="submit"
+                                                    className="absolute right-0 bottom-1"
+                                                    onClick={handleSubmitReplyReview}
+                                                >
+                                                    Submit
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                 )
                             )}
@@ -579,13 +585,14 @@ const CommentItem = ({
               onClick={() => {
                   setReplyActive(!replyActive);
                   setQuestionId(item._id);
+                  setAnswer("");
               }}
           >
             {!replyActive
                 ? item.questionReplies.length !== 0
-                    ? "All Replies"
-                    : "Add Reply"
-                : "Hide Replies"}
+                    ? "All Answers"
+                    : "Add Answers"
+                : "Hide Answers"}
           </span>
                     <BiMessage
                         size={20}

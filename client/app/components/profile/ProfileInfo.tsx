@@ -1,5 +1,3 @@
-"use client";
-
 import React, {FC, useEffect, useState} from "react";
 import avatarDefault from "../../../public/assests/avatar.png";
 import Image from "next/image";
@@ -11,19 +9,16 @@ import {
 } from "@/redux/features/user/userApi";
 import {useLoadUserQuery} from "@/redux/features/api/apiSlice";
 import toast from "react-hot-toast";
+import {useSelector} from "react-redux";
 
 type Props = {
-    avatar: string | null;
+    avatar: any;
     setAvatar: any;
-    user: {
-        name: string;
-        email: string;
-        avatar: { url: string } | null;
-    };
+    user: any;
 };
 
 const ProfileInfo: FC<Props> = ({avatar, user, setAvatar}) => {
-    const [name, setName] = useState(user?.name || '');
+    const [name, setName] = useState(user?.name || "");
     const [updateAvatar, {isSuccess, error}] = useUpdateAvatarMutation();
     const {refetch} = useLoadUserQuery(undefined);
     const [editProfile, {isSuccess: successEdit, error: errorEdit, isLoading}] = useEditProfilfeMutation();
@@ -41,7 +36,6 @@ const ProfileInfo: FC<Props> = ({avatar, user, setAvatar}) => {
 
                     try {
                         await updateAvatar(avatar);
-                        toast.success("Avatar updated successfully");
                     } catch (err) {
                         toast.error("Error updating avatar.");
                     }
@@ -64,14 +58,20 @@ const ProfileInfo: FC<Props> = ({avatar, user, setAvatar}) => {
     };
 
     useEffect(() => {
-        if (isSuccess || successEdit) {
+        if (isSuccess) {
             refetch();
+            toast.success("Avatar updated successfully");
         }
 
+
+    }, [isSuccess, refetch]);
+
+    useEffect(() => {
         if (successEdit) {
+            refetch();
             toast.success("Profile updated successfully");
         }
-    }, [isSuccess, successEdit, refetch]);
+    }, [successEdit, refetch]);
 
     return (
         <>

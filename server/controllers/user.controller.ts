@@ -17,8 +17,7 @@ import {
     updateUserRoleService
 } from "../services/user.service";
 import cloudinary from "cloudinary";
-import crypto from 'crypto';
-import bcrypt from 'bcrypt';
+import crypto from "crypto";
 
 // register user
 interface IRegistrationBody {
@@ -32,6 +31,7 @@ export const registrationUser = CatchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const {name, email, password} = req.body;
+            console.log(req.body, "req.body");
 
             const isEmailExit = await UserModel.findOne({email});
             if (isEmailExit) {
@@ -296,8 +296,8 @@ export const socialAuth = CatchAsyncError(
 
 // update user info
 interface IUpdateUserInfo {
-    name?: string;
-    email?: string;
+    name: string;
+    email: string;
 }
 
 export const updateUserInfo = CatchAsyncError(
@@ -489,7 +489,7 @@ export const deleteUser = CatchAsyncError(
 
             res.status(200).json({
                 success: true,
-                message: "User deleted successfully",
+                message: "User deleted successfully"
             });
         } catch (error: any) {
             return next(new ErrorHandler(error.message, 500));
@@ -503,18 +503,15 @@ export const forgotPassword = CatchAsyncError(
         try {
             const {email} = req.body;
 
-            // Check if the user exists
             const user = await UserModel.findOne({email});
             if (!user) {
                 return next(new ErrorHandler("User not found", 404));
             }
 
-            // Create a password reset token
             const resetToken = user.createPasswordResetToken();
             await user.save({validateBeforeSave: false});
 
             try {
-
                 res.status(200).json({
                     success: true,
                     resetToken: resetToken
@@ -535,29 +532,29 @@ export const forgotPassword = CatchAsyncError(
 export const resetPassword = CatchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            // Hash the token from the URL
             const resetToken = req.params.token;
-            const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+            const hashedToken = crypto
+                .createHash("sha256")
+                .update(resetToken)
+                .digest("hex");
 
-            // Find the user by the hashed token and check expiration
             const user = await UserModel.findOne({
                 passwordResetToken: hashedToken,
-                passwordResetExpires: {$gt: Date.now()}, // Check if token has expired
+                passwordResetExpires: {$gt: Date.now()}
             });
 
             if (!user) {
                 return next(new ErrorHandler("Invalid or expired token", 400));
             }
 
-            // Set the new password
-            user.password = req.body.password; // Ensure you validate this in the body
-            user.passwordResetToken = undefined; // Clear the token
-            user.passwordResetExpires = undefined; // Clear expiration
+            user.password = req.body.password;
+            user.passwordResetToken = undefined;
+            user.passwordResetExpires = undefined;
 
             await user.save();
             res.status(200).json({
                 success: true,
-                message: "Password has been reset successfully",
+                message: "Password has been reset successfully"
             });
         } catch (error: any) {
             return next(new ErrorHandler(error.message, 400));

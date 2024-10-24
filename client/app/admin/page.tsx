@@ -6,11 +6,13 @@ import AdminSidebar from "../components/Admin/Sidebar/AdminSidebar";
 import AdminProtected from "../hooks/adminProtected";
 import DashboardHero from "../components/Admin/DashboardHero";
 import {useLoadUserQuery} from "@/redux/features/api/apiSlice";
+import { useSelector } from "react-redux";
 
 type Props = {};
 
 const Page: FC<Props> = (props) => {
-    const {data} = useLoadUserQuery(undefined);
+    // const {data} = useLoadUserQuery(undefined);
+    const {user} = useSelector((state: any) => state.auth);
     return (
         <div>
             <AdminProtected>
@@ -21,7 +23,7 @@ const Page: FC<Props> = (props) => {
                 />
                 <div className="flex min-h-screen">
                     <div className="1500px:w-[16%] w-1/5">
-                        <AdminSidebar data={data}/>
+                        <AdminSidebar data={user}/>
                     </div>
                     <div className="w-[85%]">
                         <DashboardHero isDashboard={true}/>

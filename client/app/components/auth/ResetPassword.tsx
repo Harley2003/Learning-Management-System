@@ -74,7 +74,7 @@ const ResetPassword: FC<Props> = ({setOpen, setRoute}) => {
                                                className="absolute right-3 top-[1.3rem] cursor-pointer"/>
                     )}
                 </div>
-                <br />
+                <br/>
                 <label className={styles.label} htmlFor="confirmPassword">Confirm Password</label>
                 <div className="relative">
                     <input

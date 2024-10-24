@@ -1,5 +1,3 @@
-"use client";
-
 import {styles} from "@/app/styles/style";
 import {useUpdatePasswordMutation} from "@/redux/features/user/userApi";
 import React, {FC, useEffect, useState} from "react";

@@ -6,11 +6,9 @@ import OrderModel, { IOrder } from "../models/order.model";
 import NotificationModel from "../models/notification.model";
 import UserModel from "../models/user.model";
 import CourseModel from "../models/course.model";
-// import ejs from "ejs";
-// import path from "path";
 import sendMail from "../utils/sendMail";
+import { redis } from "../utils/redis";
 import { getAllOrderServices, newOrder } from "../services/order.service";
-import { redis } from './../utils/redis';
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
@@ -48,7 +46,7 @@ export const createOrder = CatchAsyncError(
       const course = await CourseModel.findById(courseId);
 
       if (!course) {
-        return next(new ErrorHandler("Course not found", 404));
+        return next(new ErrorHandler("Course buy not found", 404));
       }
 
       const data: any = {
@@ -69,11 +67,6 @@ export const createOrder = CatchAsyncError(
           })
         }
       };
-
-      // const html = await ejs.renderFile(
-      //   path.join(__dirname, "../mails/order-confirmation.ejs"),
-      //   { order: mailData }
-      // );
 
       try {
         if (user) {
@@ -109,6 +102,90 @@ export const createOrder = CatchAsyncError(
       await course.save();
 
       newOrder(data, res, next);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  }
+);
+
+// create order free
+export const createFreeOrder = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { courseId } = req.body;
+
+      const user = await UserModel.findById(req.user?._id);
+
+      if (!user) {
+        return next(new ErrorHandler("User not found", 404));
+      }
+
+      const courseExistInUser = user.courses.some(
+        (course: any) => course._id.toString() === courseId
+      );
+
+      if (courseExistInUser) {
+        return next(
+          new ErrorHandler("You have already purchased this course", 400)
+        );
+      }
+
+      // Find the course
+      const course = await CourseModel.findById(courseId);
+      console.log(course, "course");
+      
+      if (!course) {
+        return next(new ErrorHandler("Course free not found", 404));
+      }
+
+      // Add the course to the user's courses
+      user.courses.push(course._id as any);
+
+      // Save the user data and update Redis cache
+      await redis.set(req.user?._id as any, JSON.stringify(user));
+      await user.save();
+
+      // Send a notification for the new order
+      await NotificationModel.create({
+        user: user._id,
+        title: "New Order",
+        message: `You have successfully enrolled in the course: ${course.name}`
+      });
+
+      // Update the purchased count of the course
+      course.purchased = (course.purchased || 0) + 1;
+      await course.save();
+
+      // Send order confirmation email
+      const mailData = {
+        order: {
+          _id: course._id?.toString().slice(0, 6),
+          name: course.name,
+          price: "Free",
+          date: new Date().toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+          })
+        }
+      };
+
+      // try {
+      //     await sendMail({
+      //         email: user.email,
+      //         subject: "Free Course Enrollment Confirmation",
+      //         template: "order-confirmation.ejs",
+      //         data: mailData
+      //     });
+      // } catch (error: any) {
+      //     return next(new ErrorHandler(error.message, 500));
+      // }
+
+      // Return success response
+      res.status(201).json({
+        success: true,
+        message: "Successfully enrolled in the course"
+      });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
     }

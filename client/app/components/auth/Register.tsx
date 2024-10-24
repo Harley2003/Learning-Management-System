@@ -1,5 +1,3 @@
-"use client";
-
 import React, {FC, useEffect, useState} from "react";
 import * as Yup from "yup";
 import {useFormik} from "formik";
@@ -18,17 +16,24 @@ type Props = {
 };
 
 const schema = Yup.object().shape({
-    name: Yup.string().required("Please enter your name!"),
+    name: Yup.string()
+        .matches(/^[a-zA-Z\s'-]+$/, "Name can only contain letters, spaces, apostrophes, and hyphens")
+        .min(2, "Name must be at least 2 characters")
+        .max(10, "Name must be at most 10 characters")
+        .required("Please enter your name!")
+        .trim(),
     email: Yup.string()
-        .email("Invalid email")
-        .required("Please enter your email!").trim(),
+        .email("Please enter a valid email address.")
+        .required("Please enter your email!")
+        .trim(),
     password: Yup.string()
-        .required("Please enter your password!")
         .matches(/[A-Z]/, "Must contain at least one uppercase letter")
-        .matches(/[a-z]/, "Must contain at lowercase letter")
+        .matches(/[a-z]/, "Must contain at least one lowercase letter")
         .matches(/[0-9]/, "Must contain at least one number")
         .matches(/[!@#$%^&*]/, "Must contain at least one special character")
-        .min(8, "Password must be at least 8 characters").trim()
+        .min(8, "Password must be at least 8 characters")
+        .required("Please enter your password!")
+        .trim()
 });
 
 const Register: FC<Props> = ({setRoute}) => {
@@ -100,7 +105,7 @@ const Register: FC<Props> = ({setRoute}) => {
                         Enter your Email
                     </label>
                     <input
-                        type="email"
+                        type="text"
                         name="email"
                         id="email"
                         onChange={handleChange}

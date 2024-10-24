@@ -1,5 +1,3 @@
-"use client";
-
 import React, {FC, useEffect, useState} from "react";
 import CourseInfomation from "./CourseInfomation";
 import CourseOptions from "./CourseOptions";

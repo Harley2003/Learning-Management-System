@@ -1,5 +1,3 @@
-"use client";
-
 import React, {FC, useCallback, useEffect, useState} from "react";
 import ThemeSwitcher from "../../utils/ThemeSwitcher";
 import {IoMdNotificationsOutline} from "react-icons/io";
@@ -53,7 +51,7 @@ const DashboardHeader: FC<Props> = ({open = false, setOpen}) => {
 
     return (
         <div className="flex items-center justify-end p-6 fixed top-5 right-0 z-[9999999]">
-            <ThemeSwitcher/>
+            {/*<ThemeSwitcher/>*/}
             <div className="relative cursor-pointer m-2" onClick={handleToggleOpen}>
                 <IoMdNotificationsOutline className="text-2xl dark:text-white text-black"/>
                 {notifications.length > 0 && (

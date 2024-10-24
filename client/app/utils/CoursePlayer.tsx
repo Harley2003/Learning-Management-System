@@ -1,48 +1,48 @@
-import React, { FC, useEffect, useState } from "react";
+import React, {FC, useEffect, useState} from "react";
 import axios from "axios";
 import Head from "next/head";
 
 type Props = {
-  videoUrl: string;
-  title: string;
+    videoUrl: string;
+    title: string;
 };
 
-const CoursePlayer: FC<Props> = ({ videoUrl, title }) => {
-  const [embedUrl, setEmbedUrl] = useState("");
+const CoursePlayer: FC<Props> = ({videoUrl, title}) => {
+    const [embedUrl, setEmbedUrl] = useState("");
 
-  useEffect(() => {
-    const fetchVideo = async () => {
-      try {
-        const response = await axios.post(`http://localhost:8000/api/v1/generateVideoUrl`, {
-          videoUrl,
-        });
-        const { link } = response.data;
-        setEmbedUrl(link);
-      } catch (error) {
-        console.error("Error fetching video:", error);
-      }
-    };
+    useEffect(() => {
+        const fetchVideo = async () => {
+            try {
+                const response = await axios.post(`http://localhost:8000/api/v1/generateVideoUrl`, {
+                    videoUrl,
+                });
+                const {link} = response.data;
+                setEmbedUrl(link);
+            } catch (error) {
+                console.error("Error fetching video:", error);
+            }
+        };
 
-    fetchVideo();
-  }, [videoUrl]);
+        fetchVideo();
+    }, [videoUrl]);
 
-  return (
-      <>
-        <Head>
-          <title>{title}</title>
-          <script src="https://player.vimeo.com/api/player.js" async></script>
-        </Head>
-        <div style={{ padding: "56.25% 0 0 0", position: "relative" }}>
-          <iframe
-              src={embedUrl}
-              frameBorder="0"
-              allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
-              style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
-              title={title}
-          ></iframe>
-        </div>
-      </>
-  );
+    return (
+        <>
+            <Head>
+                <title>{title}</title>
+                <script src="https://player.vimeo.com/api/player.js" async></script>
+            </Head>
+            <div style={{padding: "56.25% 0 0 0", position: "relative"}}>
+                <iframe
+                    src={embedUrl}
+                    frameBorder="0"
+                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+                    style={{position: "absolute", top: 0, left: 0, width: "100%", height: "100%"}}
+                    title={title}
+                ></iframe>
+            </div>
+        </>
+    );
 };
 
 export default CoursePlayer;

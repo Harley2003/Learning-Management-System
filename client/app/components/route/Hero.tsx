@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import React, {FC, useState} from "react";
@@ -109,7 +107,7 @@ const Hero: FC<Props> = (props) => {
                                     className="rounded-full ml-[-20px]"
                                 />
                                 <p className="font-Josefin dark:text-[#edfff4] text-[#000000b3] 1000px:pl-3 text-[18px] font-[600]">
-                                    500K+ People already trusted us.
+                                    500K+ People already trusted us.{" "}
                                     <Link
                                         href="/courses"
                                         className="dark:text-[#46e256] text-[crimson]"

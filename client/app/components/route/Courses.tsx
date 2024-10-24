@@ -1,11 +1,8 @@
-"use client";
-
 import {useGetUsersAllCoursesQuery} from "@/redux/features/courses/courseApi";
 import React, {FC, useEffect, useState} from "react";
 import CourseCard from "../Course/CourseCard";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Slider from "react-slick";
 import Loader from "@/app/components/Loader/Loader";
 
 type Props = {};
@@ -15,78 +12,13 @@ const Courses: FC<Props> = (props) => {
     const [course, setCourse] = useState<any[]>([]);
 
     useEffect(() => {
-        setCourse(data?.courses);
+        if (data?.courses) {
+            const sortedCourses = [...data.courses].sort((a, b) =>
+                new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+            setCourse(sortedCourses.slice(0, 4));
+        }
     }, [data]);
-
-    // Cấu hình cho slider
-    // const settingsTop = {
-    //   dots: true,
-    //   infinite: true,
-    //   speed: 500,
-    //   slidesToShow: 4,
-    //   slidesToScroll: 4,
-    //   arrows: false,
-    //   autoplay: true,
-    //   autoplaySpeed: 3000,
-    //   responsive: [
-    //     {
-    //       breakpoint: 1024,
-    //       settings: {
-    //         slidesToShow: 3,
-    //         slidesToScroll: 3
-    //       }
-    //     },
-    //     {
-    //       breakpoint: 600,
-    //       settings: {
-    //         slidesToShow: 2,
-    //         slidesToScroll: 2
-    //       }
-    //     },
-    //     {
-    //       breakpoint: 480,
-    //       settings: {
-    //         slidesToShow: 1,
-    //         slidesToScroll: 1
-    //       }
-    //     }
-    //   ]
-    // };
-
-    // const settingsBottom = {
-    //   dots: true,
-    //   infinite: true,
-    //   speed: 500,
-    //   slidesToShow: 4,
-    //   slidesToScroll: 4,
-    //   arrows: false,
-    //   autoplay: true,
-    //   autoplaySpeed: 3000,
-    //   rtl: true,
-    //   responsive: [
-    //     {
-    //       breakpoint: 1024,
-    //       settings: {
-    //         slidesToShow: 3,
-    //         slidesToScroll: 3
-    //       }
-    //     },
-    //     {
-    //       breakpoint: 600,
-    //       settings: {
-    //         slidesToShow: 2,
-    //         slidesToScroll: 2
-    //       }
-    //     },
-    //     {
-    //       breakpoint: 480,
-    //       settings: {
-    //         slidesToShow: 1,
-    //         slidesToScroll: 1
-    //       }
-    //     }
-    //   ]
-    // };
 
     return (
         <div className="py-10">
@@ -106,26 +38,6 @@ const Courses: FC<Props> = (props) => {
                                 ))}
                         </div>
                 }
-
-                {/* <Slider {...settingsTop} className="mb-10">
-          {course &&
-            course.slice(0, 4).map((item: any, index: number) => (
-              <div key={index} className="px-2">
-                {" "}
-                <CourseCard item={item} />
-              </div>
-            ))}
-        </Slider>
-
-        <Slider {...settingsBottom}>
-          {course &&
-            course.slice(4, 8).map((item: any, index: number) => (
-              <div key={index} className="px-2">
-                {" "}
-                <CourseCard item={item} />
-              </div>
-            ))}
-        </Slider> */}
             </div>
         </div>
     );

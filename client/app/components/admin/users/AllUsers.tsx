@@ -1,5 +1,3 @@
-"use client";
-
 import React, {FC, useEffect, useState} from "react";
 import {DataGrid} from "@mui/x-data-grid";
 import {Box, Button, Modal} from "@mui/material";
@@ -30,7 +28,7 @@ const AllUsers: FC<Props> = ({isTeam}) => {
     const [open, setOpen] = useState(false);
     const [userId, setUserId] = useState("");
 
-    const { data: loadUser, isLoading: isUserLoading } = useLoadUserQuery(undefined);
+    const {data: loadUser, isLoading: isUserLoading} = useLoadUserQuery(undefined);
     const {isLoading, data, refetch} = useGetAllUsersQuery(undefined);
 
     const [updateUserRole, {isSuccess: updateSuccess, error: updateError}] =
@@ -74,7 +72,7 @@ const AllUsers: FC<Props> = ({isTeam}) => {
     }, [updateError, updateSuccess, deleteError, deleteSuccess, refetch]);
 
     const columns = [
-        {field: "id", headerName: "ID", flex: 0.3},
+        // {field: "id", headerName: "ID", flex: 0.3},
         {field: "name", headerName: "Name", flex: 0.5},
         {field: "email", headerName: "Email", flex: 0.5},
         {field: "role", headerName: "Role", flex: 0.5},
@@ -96,20 +94,6 @@ const AllUsers: FC<Props> = ({isTeam}) => {
                             className="dark:text-white text-black"
                             size={20}
                         />
-                    </Button>
-                );
-            }
-        },
-        {
-            field: "edit email",
-            headerName: "Email",
-            flex: 0.2,
-            renderCell: (params: any) => {
-                return (
-                    <Button>
-                        <Link href={`mailto:${params.row.email}`}>
-                            <AiOutlineMail className="dark:text-white text-black" size={20}/>
-                        </Link>
                     </Button>
                 );
             }

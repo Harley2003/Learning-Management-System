@@ -1,6 +1,5 @@
 import React, {FC, useEffect, useState} from "react";
 import SideBarProfile from "./SideBarProfile";
-import {signOut} from "next-auth/react";
 import ProfileInfo from "./ProfileInfo";
 import ChangePassword from "./ChangePassword";
 import CourseCard from "../Course/CourseCard";
@@ -8,6 +7,7 @@ import {useGetUsersAllCoursesQuery} from "@/redux/features/courses/courseApi";
 import Loader from "../Loader/Loader";
 import {useLogoutMutation} from "@/redux/features/auth/authApi";
 import {useRouter} from "next/navigation";
+import {persistor} from "@/redux/store";
 
 type Props = {
     user: any;
@@ -26,6 +26,7 @@ const Profile: FC<Props> = ({user}) => {
     const logOutHandler = async () => {
         try {
             await logout().unwrap();
+            await persistor.purge();
             router.push("/");
         } catch (error) {
             console.error("Logout error:", error);
@@ -45,9 +46,7 @@ const Profile: FC<Props> = ({user}) => {
 
     useEffect(() => {
         if (data) {
-            const filteredCourses = user.courses
-                .map((userCourse: any) => data.courses.find((course: any) => course._id === userCourse._id))
-                .filter(Boolean);
+            const filteredCourses = user.courses?.map((userCourse: any) => data.courses.find((course: any) => course._id === userCourse._id)).filter(Boolean);
             setCourses(filteredCourses);
         }
     }, [data, user.courses]);

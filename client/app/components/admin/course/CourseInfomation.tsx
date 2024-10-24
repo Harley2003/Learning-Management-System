@@ -1,5 +1,3 @@
-"use client";
-
 import {styles} from "@/app/styles/style";
 import Image from "next/image";
 import React, {FC, useEffect, useState} from "react";

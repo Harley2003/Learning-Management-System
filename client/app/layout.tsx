@@ -5,7 +5,6 @@ import {Josefin_Sans} from "next/font/google";
 import "./globals.css";
 import {ThemeProvider} from "./utils/Theme-provider";
 import {Providers} from "./Provider";
-import {SessionProvider} from "next-auth/react";
 import {useEffect, useState} from "react";
 import {Pacifico} from "next/font/google";
 import {Toaster} from "react-hot-toast";
@@ -41,14 +40,14 @@ export default function RootLayout({
     return (
         <html lang="en">
         <body
-            className={`${poppins.variable} ${josefin.variable} ${cursive.variable} !bg-white bg-no-repeat dark:bg-gradient-to-b dark:from-gray-900 dark:to-black duration-300`}
+            className={`${poppins.variable} ${josefin.variable} ${cursive.variable} bg-white dark:bg-gray-900 duration-300 transition-colors`}
         >
         <Providers>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
                 <SocketProvider>
                     {children}
                 </SocketProvider>
-                <Toaster position="top-center" reverseOrder={false} />
+                <Toaster position="top-center" reverseOrder={false}/>
             </ThemeProvider>
         </Providers>
         </body>
@@ -84,7 +83,7 @@ const SocketProvider: React.FC<{ children: React.ReactNode }> = ({children}) => 
     useEffect(() => {
         const timer = setTimeout(() => {
             if (loading) setLoading(false);
-        }, 3000);
+        }, 1000);
 
         return () => clearTimeout(timer);
     }, [loading]);

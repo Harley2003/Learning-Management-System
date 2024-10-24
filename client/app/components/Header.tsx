@@ -1,16 +1,12 @@
-"use client";
-
 import React, {FC, useEffect, useState} from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {HiOutlineMenuAlt3, HiOutlineUserCircle} from "react-icons/hi";
 import NavItems from "../utils/NavItems";
-import ThemeSwitcher from "../utils/ThemeSwitcher";
 import CustomModal from "../utils/CustomModal";
 import Login from "./Auth/Login";
 import Register from "./Auth/Register";
 import Verification from "./Auth/Verification";
-import {useLoadUserQuery} from "@/redux/features/api/apiSlice";
 import avatarDefault from "../../public/assests/avatar.png";
 import {useSelector} from "react-redux";
 import ForgetPassword from "@/app/components/Auth/ForgetPassword";
@@ -28,7 +24,6 @@ const Header: FC<Props> = ({open, setOpen, activeItem, route, setRoute}) => {
     const [active, setActive] = useState(false);
     const [openSidebar, setOpenSidebar] = useState(false);
     const {user} = useSelector((state: any) => state.auth);
-    useLoadUserQuery(undefined);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -39,8 +34,19 @@ const Header: FC<Props> = ({open, setOpen, activeItem, route, setRoute}) => {
             }
         };
 
+        const handleResize = () => {
+            if (window.innerWidth >= 799) {
+                setOpenSidebar(false);
+            }
+        }
+
         window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
+        window.addEventListener("resize", handleResize);
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+            window.removeEventListener("resize", handleResize);
+        }
     }, []);
 
     const handleClose = (event: any) => {
@@ -70,7 +76,7 @@ const Header: FC<Props> = ({open, setOpen, activeItem, route, setRoute}) => {
                         </div>
                         <div className="flex items-center">
                             <NavItems activeItem={activeItem} isMobile={false}/>
-                            <ThemeSwitcher/>
+                            {/*<ThemeSwitcher/>*/}
                             {/* Avatar hiển thị theo responsive */}
                             <div className="hidden 800px:block">
                                 {user ? (

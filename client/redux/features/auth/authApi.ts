@@ -1,6 +1,7 @@
 import {apiSlice} from "../api/apiSlice";
 import {userLogin, userLogout, userRegister} from "./authSlice";
 import Cookies from "js-cookie";
+import {persistor} from "@/redux/store";
 
 type RegisterResponse = {
     message: string;

@@ -51,7 +51,7 @@ const CheckOutForm: FC<Props> = ({setOpen, data, user}) => {
             setIsLoading(false);
             if (!dataOrder) {
                 await createOrder({courseId: data._id, payment_info: paymentIntent});
-                toast.success("Payment completed successfully.");
+                // toast.success("Payment completed successfully.");
             }
         }
     };
@@ -81,7 +81,7 @@ const CheckOutForm: FC<Props> = ({setOpen, data, user}) => {
             <PaymentElement id="payment-element"/>
             <button disabled={isLoading || !stripe || !elements} id="submit" className="ml-[180px] mt-[10px]">
                 <span id="button-text" className={`${styles.button} mt-2 !h-[35px]`}>
-                    {isLoading ? "Processing..." : "Pay now"}
+                    Pay now
                 </span>
             </button>
             {message && (

@@ -1,11 +1,18 @@
 import React from "react";
-import { store } from "@/redux/store";
-import { Provider } from "react-redux";
+import {persistor, store} from "@/redux/store";
+import {Provider} from "react-redux";
+import {PersistGate} from "redux-persist/integration/react";
 
 interface ProvidersProps {
-  children: any;
+    children: any;
 }
 
-export function Providers({ children }: ProvidersProps) {
-  return <Provider store={store}>{children}</Provider>;
+export function Providers({children}: ProvidersProps) {
+    return (
+        <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+                {children}
+            </PersistGate>
+        </Provider>
+    );
 }

@@ -1,7 +1,18 @@
-import { redirect } from "next/navigation";
-import useAuth from "./userAuth";
+import {useRouter} from "next/navigation";
+import {useEffect} from "react";
+import useAuth from "@/app/hooks/userAuth";
 
-export default function Protected({children}:{children:React.ReactNode}) {
+export default function Protected({children}: { children: React.ReactNode }) {
     const isAuthenticated = useAuth();
-    return isAuthenticated ? children : redirect("/");    
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            router.push("/");
+        }
+    }, [isAuthenticated, router]);
+
+    if (!isAuthenticated) return null;
+
+    return <>{children}</>;
 }

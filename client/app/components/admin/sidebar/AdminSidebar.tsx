@@ -1,23 +1,15 @@
-"use client";
-
 import {FC, useEffect, useState} from "react";
 import {ProSidebar, Menu, MenuItem} from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
-import {Box, IconButton, Typography} from "@mui/material";
+import {Box, Typography} from "@mui/material";
 import {
     HomeOutlinedIcon,
-    ArrowBackIosIcon,
     PeopleOutlinedIcon,
     ReceiptOutlinedIcon,
     BarChartOutlinedIcon,
-    MapOutlinedIcon,
     GroupsIcon,
     OndemandVideoIcon,
     VideoCallIcon,
-    WebIcon,
-    QuizIcon,
-    WysiwygIcon,
-    ManageHistoryIcon,
     ExitToAppIcon
 } from "./Icon";
 import avatarDefault from "../../../../public/assests/avatar.png";
@@ -127,29 +119,23 @@ const AdminSidebar: FC<AdminSidebarProps> = ({data}) => {
             >
                 <Menu>
                     <MenuItem
-                        // onClick={() => setIsCollapsed(!isCollapsed)}
-                        // icon={isCollapsed ? <ArrowForwardIosIcon /> : undefined}
                         style={{margin: "10px 0 20px 0"}}
                     >
                         {!isCollapsed && (
-                            <Box
-                                display="flex"
-                                justifyContent="center"
-                                alignItems="center"
-                                ml="15px"
-                            >
-                                <Link href="/" className="inline-block">
-                                    <h3 className="text-[25px] font-Poppins uppercase dark:text-white text-black">
-                                        ELearning
-                                    </h3>
-                                </Link>
-                                {/*<IconButton*/}
-                                {/*  onClick={() => setIsCollapsed(!isCollapsed)}*/}
-                                {/*  className="inline-block"*/}
-                                {/*>*/}
-                                {/*  <ArrowBackIosIcon className="text-black dark:text-[#ffffffc1]" />*/}
-                                {/*</IconButton>*/}
-                            </Box>
+                            <div className="w-full">
+                                <Box
+                                    display="flex"
+                                    justifyContent="center"
+                                    alignItems="center"
+                                    ml="15px"
+                                >
+                                    <Link href="/" className="inline-block">
+                                        <h3 className="text-[25px] font-Poppins uppercase dark:text-white text-black">
+                                            ELearning
+                                        </h3>
+                                    </Link>
+                                </Box>
+                            </div>
                         )}
                     </MenuItem>
 
@@ -162,10 +148,10 @@ const AdminSidebar: FC<AdminSidebarProps> = ({data}) => {
                                     height={100}
                                     src={user.avatar ? user.avatar.url : avatarDefault}
                                     style={{
-                                        // cursor: "pointer",
                                         borderRadius: "50%",
                                         border: "3px solid #5b6fe6"
                                     }}
+                                    className="h-[100px] w-[100px]"
                                 />
                             </Box>
                             <Box textAlign="center">
@@ -178,12 +164,6 @@ const AdminSidebar: FC<AdminSidebarProps> = ({data}) => {
                     {user?.name} - {user?.role.toUpperCase()}
                   </span>
                                 </Typography>
-                                {/* <Typography
-                    variant="h6"
-                    sx={{ m: "10px 0 0 0" }}
-                    className="!text-[20px] text-black dark:text-[#ffffffc1] capitalize"
-                  > 
-                  </Typography> */}
                             </Box>
                         </Box>
                     )}
@@ -196,14 +176,6 @@ const AdminSidebar: FC<AdminSidebarProps> = ({data}) => {
                             selected={selected}
                             setSelected={setSelected}
                         />
-
-                        {/* <Typography
-                variant="h5"
-                sx={{ m: "15px 0 5px 25px" }}
-                className="!text-[18px] text-black dark:text-[#ffffffc1] capitalize !font-[400]"
-              >
-                {!isCollapsed && "Data"}
-              </Typography> */}
                         <Typography
                             variant="h5"
                             className="!text-[18px] text-black dark:text-[#ffffffc1] capitalize !font-[400]"
