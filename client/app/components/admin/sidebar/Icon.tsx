@@ -16,19 +16,19 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
 export {
-  HomeOutlinedIcon,
-  ArrowForwardIosIcon,
-  ArrowBackIosIcon,
-  PeopleOutlinedIcon,
-  ReceiptOutlinedIcon,
-  BarChartOutlinedIcon,
-  MapOutlinedIcon,
-  GroupsIcon,
-  OndemandVideoIcon,
-  VideoCallIcon,
-  WebIcon,
-  QuizIcon,
-  WysiwygIcon,
-  ManageHistoryIcon,
-  ExitToAppIcon
+    HomeOutlinedIcon,
+    ArrowForwardIosIcon,
+    ArrowBackIosIcon,
+    PeopleOutlinedIcon,
+    ReceiptOutlinedIcon,
+    BarChartOutlinedIcon,
+    MapOutlinedIcon,
+    GroupsIcon,
+    OndemandVideoIcon,
+    VideoCallIcon,
+    WebIcon,
+    QuizIcon,
+    WysiwygIcon,
+    ManageHistoryIcon,
+    ExitToAppIcon
 };

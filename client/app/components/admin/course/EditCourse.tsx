@@ -1,5 +1,3 @@
-"use client";
-
 import React, {FC, useEffect, useState} from "react";
 import CourseInfomation from "./CourseInfomation";
 import CourseOptions from "./CourseOptions";
@@ -15,10 +13,7 @@ type Props = {
 };
 
 const EditCourse: FC<Props> = ({id}) => {
-    const {isLoading, data, refetch} = useGetAllCoursesQuery(
-        {},
-        {refetchOnMountOrArgChange: true}
-    );
+    const {isLoading, data} = useGetAllCoursesQuery({});
     const editCourseData =
         data && data.courses.find((item: any) => item._id === id);
     useEffect(() => {
@@ -28,7 +23,7 @@ const EditCourse: FC<Props> = ({id}) => {
                 description: editCourseData.description,
                 categories: editCourseData.categories,
                 price: editCourseData.price,
-                estimatedPrice: editCourseData?.estimatedPrice,
+                estimatedPrice: editCourseData.estimatedPrice,
                 tags: editCourseData.tags,
                 level: editCourseData.level,
                 demoUrl: editCourseData.demoUrl,
@@ -101,6 +96,7 @@ const EditCourse: FC<Props> = ({id}) => {
         const data = {
             name: courseInfo.name,
             description: courseInfo.description,
+            categories: courseInfo.categories,
             price: courseInfo.price,
             estimatedPrice: courseInfo.estimatedPrice,
             tags: courseInfo.tags,
@@ -115,6 +111,8 @@ const EditCourse: FC<Props> = ({id}) => {
 
         setCourseData(data);
     };
+
+    console.log(courseData, "courseData");
 
     const handleCoursePreviewSubmit = async () => {
         const data = courseData;

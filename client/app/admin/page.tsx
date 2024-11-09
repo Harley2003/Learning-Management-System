@@ -5,10 +5,13 @@ import Heading from "../utils/Heading";
 import AdminSidebar from "../components/Admin/Sidebar/AdminSidebar";
 import AdminProtected from "../hooks/adminProtected";
 import DashboardHero from "../components/Admin/DashboardHero";
+import {useLoadUserQuery} from "@/redux/features/api/apiSlice";
+import { useSelector } from "react-redux";
 
 type Props = {};
 
-const page: FC<Props> = (props) => {
+const Page: FC<Props> = (props) => {
+    const {user} = useSelector((state: any) => state.auth);
     return (
         <div>
             <AdminProtected>
@@ -18,8 +21,8 @@ const page: FC<Props> = (props) => {
                     keywords="Prograaming,MERN,Redux,Machine Learning"
                 />
                 <div className="flex min-h-screen">
-                    <div className="1500px:w-[16%] w-1/5">
-                        <AdminSidebar/>
+                    <div className="1500px:w-[15%] w-1/5">
+                        <AdminSidebar data={user}/>
                     </div>
                     <div className="w-[85%]">
                         <DashboardHero isDashboard={true}/>
@@ -30,4 +33,4 @@ const page: FC<Props> = (props) => {
     );
 };
 
-export default page;
+export default Page;

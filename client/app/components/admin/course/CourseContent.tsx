@@ -1,5 +1,3 @@
-"use client";
-
 import {styles} from "@/app/styles/style";
 import React, {FC, useState} from "react";
 import toast from "react-hot-toast";
@@ -300,11 +298,20 @@ const CourseContent: FC<Props> = ({
                                                 className={`${styles.input}`}
                                                 value={link.title}
                                                 onChange={(e) => {
-                                                    const updatedData = [...courseContentData];
-                                                    updatedData[index].links[linkIndex] = {
-                                                        ...updatedData[index].links[linkIndex],
-                                                        title: e.target.value
-                                                    };
+                                                    const updatedData = courseContentData.map((content, contentIndex) => {
+                                                        if (contentIndex === index) {
+                                                            return {
+                                                                ...content,
+                                                                links: content.links.map((l: any, lIndex: number) =>
+                                                                    lIndex === linkIndex ? {
+                                                                        ...l,
+                                                                        title: e.target.value
+                                                                    } : l
+                                                                )
+                                                            };
+                                                        }
+                                                        return content;
+                                                    });
                                                     setCourseContentData(updatedData);
                                                 }}
                                             />
@@ -314,11 +321,20 @@ const CourseContent: FC<Props> = ({
                                                 className={`${styles.input}`}
                                                 value={link.url}
                                                 onChange={(e) => {
-                                                    const updatedData = [...courseContentData];
-                                                    updatedData[index].links[linkIndex] = {
-                                                        ...updatedData[index].links[linkIndex],
-                                                        url: e.target.value
-                                                    };
+                                                    const updatedData = courseContentData.map((content, contentIndex) => {
+                                                        if (contentIndex === index) {
+                                                            return {
+                                                                ...content,
+                                                                links: content.links.map((l: any, lIndex: number) =>
+                                                                    lIndex === linkIndex ? {
+                                                                        ...l,
+                                                                        url: e.target.value
+                                                                    } : l
+                                                                )
+                                                            };
+                                                        }
+                                                        return content;
+                                                    });
                                                     setCourseContentData(updatedData);
                                                 }}
                                             />

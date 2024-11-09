@@ -1,9 +1,9 @@
-"use client";
-
 import {styles} from "@/app/styles/style";
 import Image from "next/image";
 import React, {FC, useEffect, useState} from "react";
 import {useGetHeroDataQuery} from "@/redux/features/layout/layoutApi";
+import {TypeCategories, dataCategories} from "@/app/utils/DataCategories";
+import toast from "react-hot-toast";
 
 type Props = {
     courseInfo: any;
@@ -19,17 +19,54 @@ const CourseInfomation: FC<Props> = ({
                                          setActive
                                      }) => {
     const [dragging, setDragging] = useState(false);
-    const {data} = useGetHeroDataQuery("Categories", {});
-    const [categories, setCategories] = useState([]);
+    const [categories, setCategories] = useState<TypeCategories[]>([]);
+    // const {data} = useGetHeroDataQuery("Categories", {});
+    // const [categories, setCategories] = useState([]);
+
+    const validateCoursePrices = () => {
+        const price = Number(courseInfo.price);
+        const estimatedPrice = Number(courseInfo.estimatedPrice);
+
+        if (isNaN(price) || isNaN(estimatedPrice)) {
+            toast.error("Please enter valid numeric values for prices.");
+            return false;
+        }
+
+        if (price > estimatedPrice) {
+            toast.error("Course Price cannot be greater than Estimated Price.");
+            return false;
+        }
+
+        if (estimatedPrice < price) {
+            toast.error("Estimated Price cannot be less than Course Price.");
+            return false;
+        }
+
+        if (estimatedPrice === price) {
+            toast.error("Estimated Price cannot be equal Course Price.");
+            return false;
+        }
+
+        return true;
+    };
+
+    // useEffect(() => {
+    //     if (data) {
+    //         setCategories(data.layout.categories);
+    //     }
+    // }, [data]);
 
     useEffect(() => {
-        if (data) {
-            setCategories(data.layout.categories);
+        if (dataCategories) {
+            setCategories(dataCategories);
         }
-    }, [data]);
+    }, []);
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
+        if (!validateCoursePrices()) {
+            return;
+        }
         setActive(active + 1);
     };
 
@@ -89,7 +126,7 @@ const CourseInfomation: FC<Props> = ({
                             setCourseInfo({...courseInfo, name: e.target.value})
                         }
                         id="name"
-                        placeholder="MERN stack LMS platform with next 14"
+                        placeholder=""
                         className={`${styles.input}`}
                     />
                 </div>
@@ -121,6 +158,8 @@ const CourseInfomation: FC<Props> = ({
                             type="number"
                             name=""
                             required
+                            min="0"
+                            max="999"
                             value={courseInfo.price}
                             onChange={(e: any) =>
                                 setCourseInfo({...courseInfo, price: e.target.value})
@@ -138,6 +177,8 @@ const CourseInfomation: FC<Props> = ({
                             type="number"
                             name=""
                             required
+                            min="0"
+                            max="999"
                             value={courseInfo.estimatedPrice}
                             onChange={(e: any) =>
                                 setCourseInfo({...courseInfo, estimatedPrice: e.target.value})
@@ -163,7 +204,7 @@ const CourseInfomation: FC<Props> = ({
                                 setCourseInfo({...courseInfo, tags: e.target.value})
                             }
                             id="tags"
-                            placeholder="MERN, Next 13, Socket io, tailwind css, LMS"
+                            placeholder=""
                             className={`${styles.input}`}
                         />
                     </div>
@@ -222,7 +263,7 @@ const CourseInfomation: FC<Props> = ({
                                 setCourseInfo({...courseInfo, demoUrl: e.target.value})
                             }
                             id="demoUrl"
-                            placeholder="eer74fd"
+                            placeholder=""
                             className={`${styles.input}`}
                         />
                     </div>
@@ -247,16 +288,18 @@ const CourseInfomation: FC<Props> = ({
                     >
                         {courseInfo.thumbnail ? (
                             <Image
+                                priority
                                 src={courseInfo.thumbnail}
                                 alt=""
                                 width={100}
-                                height={100}
-                                className="w-full max-h-full object-cover"
+                                height={75}
+                                layout="responsive"
+                                className="object-cover"
                             />
                         ) : (
                             <span className="text-black dark:text-white">
-                Drag and drop your thumbnail here or click to browse
-              </span>
+                            Drag and drop your thumbnail here or click to browse
+                            </span>
                         )}
                     </label>
                 </div>

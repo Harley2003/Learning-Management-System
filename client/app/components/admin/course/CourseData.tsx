@@ -1,5 +1,3 @@
-"use client";
-
 import {styles} from "@/app/styles/style";
 import React, {FC} from "react";
 import toast from "react-hot-toast";
@@ -35,6 +33,11 @@ const CourseData: FC<Props> = ({
     };
 
     const handleRemoveBenefit = (index: number) => {
+        if (benefits.length === 1) {
+            toast.error("You cannot remove the last benefit.");
+            return;
+        }
+
         const updatedBenefits = benefits.filter((_, idx) => idx !== index);
         setBenefits(updatedBenefits);
     };
@@ -67,6 +70,11 @@ const CourseData: FC<Props> = ({
     };
 
     const handleRemovePrerequisites = (index: number) => {
+        if (prerequisites.length === 1) {
+            toast.error("You cannot remove the last prerequisite.");
+            return;
+        }
+
         const updatedPrerequisites = prerequisites.filter((_, idx) => idx !== index);
         setPrerequisites(updatedPrerequisites);
     };
