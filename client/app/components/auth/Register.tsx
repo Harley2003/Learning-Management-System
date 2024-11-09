@@ -49,6 +49,7 @@ const Register: FC<Props> = ({setRoute}) => {
 
         if (error && "data" in error) {
             const errorData = error as any;
+            setRoute("Login");
             toast.error(errorData.data.message);
         }
     }, [isSuccess, error, data?.message, setRoute]);
@@ -135,16 +136,16 @@ const Register: FC<Props> = ({setRoute}) => {
                         } ${styles.input}`}
                     />
                     {!show ? (
-                        <AiOutlineEyeInvisible
+                        <AiOutlineEye
                             className="absolute bottom-3 right-2 z-1 cursor-pointer"
                             size={20}
                             onClick={() => setShow(true)}
                         />
                     ) : (
-                        <AiOutlineEye
-                            className="absolute bottom-3 right-2 z-1 cursor-pointer"
-                            size={20}
-                            onClick={() => setShow(false)}
+                        <AiOutlineEyeInvisible
+                        className="absolute bottom-3 right-2 z-1 cursor-pointer"
+                        size={20}
+                        onClick={() => setShow(false)}
                         />
                     )}
                 </div>

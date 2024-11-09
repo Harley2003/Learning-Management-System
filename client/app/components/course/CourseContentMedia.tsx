@@ -9,7 +9,7 @@ import {
     AiOutlineArrowRight,
     AiOutlineStar
 } from "react-icons/ai";
-import avatarDefault from "../../../public/assests/avatar.png";
+import avatarDefault from "@/public/assests/avatar.png";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import {
@@ -155,9 +155,9 @@ const CourseContentMedia: FC<Props> = ({
         if (isSuccess) {
             setQuestion("");
             socketIo.emit("notification", {
-                title: "New Question Received",
-                message: `You have a new question in ${data[activeVideo].title}`,
-                userId: user._id
+                // title: "New Question Received",
+                // message: `You have a new question in ${data[activeVideo].title}`,
+                // userId: user._id
             });
         }
 
@@ -165,9 +165,9 @@ const CourseContentMedia: FC<Props> = ({
             setAnswer("");
             if (user.role !== "admin") {
                 socketIo.emit("notification", {
-                    title: `New Reply Received`,
-                    message: `You have a new reply to your question in ${data[activeVideo].title}`,
-                    userId: user._id
+                    // title: `New Reply Received`,
+                    // message: `You have a new reply to your question in ${data[activeVideo].title}`,
+                    // userId: user._id
                 });
             }
         }
@@ -180,9 +180,9 @@ const CourseContentMedia: FC<Props> = ({
             setReview("");
             setRating(0);
             socketIo.emit("notification", {
-                title: `New Review Received`,
-                message: `A new review has been added to ${data[activeVideo].title}`,
-                userId: user._id
+                // title: `New Review Received`,
+                // message: `A new review has been added to ${data[activeVideo].title}`,
+                // userId: user._id
             });
         }
 
@@ -295,6 +295,7 @@ const CourseContentMedia: FC<Props> = ({
                 <>
                     <div className="flex w-full">
                         <Image
+                            priority
                             src={user.avatar ? user.avatar.url : avatarDefault}
                             alt=""
                             width={50}
@@ -352,6 +353,7 @@ const CourseContentMedia: FC<Props> = ({
                             <>
                                 <div className="flex w-full">
                                     <Image
+                                        priority
                                         src={user.avatar ? user.avatar.url : avatarDefault}
                                         alt=""
                                         width={50}
@@ -422,6 +424,7 @@ const CourseContentMedia: FC<Props> = ({
                                         <div className="w-full flex">
                                             <div>
                                                 <Image
+                                                    priority
                                                     src={
                                                         item?.user.avatar
                                                             ? item?.user.avatar.url
@@ -447,6 +450,7 @@ const CourseContentMedia: FC<Props> = ({
                                             <div className="w-full flex 800px:ml-16 my-5" key={index}>
                                                 <div className="w-[50px] h-[50px]">
                                                     <Image
+                                                        priority
                                                         src={
                                                             item?.user.avatar
                                                                 ? item?.user.avatar.url
@@ -564,6 +568,7 @@ const CommentItem = ({
                 <div className="flex mb-2">
                     <div>
                         <Image
+                            priority
                             src={item?.user.avatar ? item?.user.avatar.url : avatarDefault}
                             alt=""
                             width={50}
@@ -572,7 +577,12 @@ const CommentItem = ({
                         />
                     </div>
                     <div className="pl-3">
-                        <h5 className="text-[20px]">{item?.user.name}</h5>
+                        <div className="flex items-center">
+                            <h5 className="text-[20px]">{item.user.name}</h5>
+                            {item.user.role === "admin" && (
+                                <VscVerifiedFilled className="text-[#50c750] ml-2 text-[20px]"/>
+                            )}
+                        </div>
                         <p>{item?.question}</p>
                         <small className="dark:text-[#ffffff83] text-[#000000b8]">
                             {item.createAt ? format(item?.createAt) : ""}{" "}
@@ -610,6 +620,7 @@ const CommentItem = ({
                                     <div className="w-full flex 800px:ml-16 my-5 text-black dark:text-white">
                                         <div>
                                             <Image
+                                                priority
                                                 src={
                                                     item?.user.avatar
                                                         ? item?.user.avatar.url

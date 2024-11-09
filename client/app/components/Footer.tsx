@@ -11,12 +11,12 @@ const Footer: FC = () => {
                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4">
                     <div className="space-y-3">
                         <h3 className="text-[20px] font-[600] dark:text-white text-black">
-                            About
+                            About Us
                         </h3>
                         <ul className="space-y-4">
                             <li>
                                 <Link
-                                    href="/about"
+                                    href={"/about"}
                                     className="text-base text-black dark:text-gray-300 dark:hover:text-white"
                                 >
                                     Our Story
@@ -24,7 +24,7 @@ const Footer: FC = () => {
                             </li>
                             <li>
                                 <Link
-                                    href="/policy"
+                                    href={"/policy"}
                                     className="text-base text-black dark:text-gray-300 dark:hover:text-white"
                                 >
                                     Privacy Policy
@@ -32,7 +32,7 @@ const Footer: FC = () => {
                             </li>
                             <li>
                                 <Link
-                                    href="/faq"
+                                    href={"/faq"}
                                     className="text-base text-black dark:text-gray-300 dark:hover:text-white"
                                 >
                                     FAQ
@@ -47,7 +47,7 @@ const Footer: FC = () => {
                         <ul className="space-y-4">
                             <li>
                                 <Link
-                                    href="/courses"
+                                    href={"/courses"}
                                     className="text-base text-black dark:text-gray-300 dark:hover:text-white"
                                 >
                                     Courses
@@ -55,18 +55,10 @@ const Footer: FC = () => {
                             </li>
                             <li>
                                 <Link
-                                    href="/profile"
+                                    href={"/profile"}
                                     className="text-base text-black dark:text-gray-300 dark:hover:text-white"
                                 >
                                     Profile
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    href="/courses"
-                                    className="text-base text-black dark:text-gray-300 dark:hover:text-white"
-                                >
-                                    Course Detail
                                 </Link>
                             </li>
                         </ul>
@@ -110,13 +102,13 @@ const Footer: FC = () => {
                             Contact Info
                         </h3>
                         <p className="text-base dark:text-gray-300 text-black dark:hover:text-white pb-2">
-                            Call Us: ......
+                            Call Us: (555) 123-4567
                         </p>
                         <p className="text-base dark:text-gray-300 text-black dark:hover:text-white pb-2">
-                            Address: ......
+                            Address: 1234 Elm Street, Suite 567, Springfield, IL
                         </p>
                         <p className="text-base dark:text-gray-300 text-black dark:hover:text-white pb-2">
-                            Mail Us: ......
+                            Mail Us: codewithyangyang@gmail.com
                         </p>
                     </div>
                 </div>

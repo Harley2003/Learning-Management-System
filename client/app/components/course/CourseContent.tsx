@@ -12,9 +12,7 @@ type Props = {
 };
 
 const CourseContent: FC<Props> = ({id, user}) => {
-    const {data: contentData, isLoading, refetch} = useGetCourseContentQuery(id, {
-        refetchOnMountOrArgChange: true
-    });
+    const {data: contentData, isLoading, refetch} = useGetCourseContentQuery(id);
     const data = contentData?.content;
     const [activeVideo, setActiveVideo] = useState(0);
     const [open, setOpen] = useState(false);

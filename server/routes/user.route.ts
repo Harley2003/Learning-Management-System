@@ -1,19 +1,20 @@
 import express from "express";
 import {
     activateUser,
-    deleteUser, forgotPassword,
+    deleteUser,
+    forgotPassword,
     getAllUsersAdmin,
     getUserInfo,
     loginUser,
     logoutUser,
-    registrationUser, resetPassword,
-    socialAuth,
+    registrationUser,
+    resetPassword,
     updateAccessToken,
     updatePassword,
     updateProfilePicture,
     updateUserInfo,
-    updateUserRole
-} from "./../controllers/user.controller";
+    updateUserRole, updateUserStatus
+} from "../controllers/user.controller";
 import {authorizeRoles, isAuthenticated} from "../middleware/auth";
 
 const userRouter = express.Router();
@@ -24,17 +25,13 @@ userRouter.post("/active-users", activateUser);
 
 userRouter.post("/login", loginUser);
 
-userRouter.get("/logout", isAuthenticated, logoutUser);
-
-userRouter.get("/refresh-token", updateAccessToken);
+userRouter.get("/logout", logoutUser);
 
 userRouter.get(
     "/get-user-info",
     isAuthenticated,
     getUserInfo
 );
-
-userRouter.post("/social-auth", socialAuth);
 
 userRouter.put(
     "/update-user-info",
@@ -78,5 +75,12 @@ userRouter.delete(
 userRouter.post("/forget-password", forgotPassword);
 
 userRouter.patch("/reset-password/:token", resetPassword);
+
+userRouter.post(
+    "/update-user-status",
+    isAuthenticated,
+    authorizeRoles("admin"),
+    updateUserStatus
+);
 
 export default userRouter;

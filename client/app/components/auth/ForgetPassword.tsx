@@ -21,6 +21,7 @@ const ForgetPassword: FC<Props> = ({setOpen, setRoute}) => {
 
         if (error && "data" in error) {
             const errorData = error as any;
+            setRoute("Login");
             setOpen(false);
             toast.error(errorData.data.message);
         }

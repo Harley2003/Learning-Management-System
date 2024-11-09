@@ -4,7 +4,7 @@ import React, {FC} from "react";
 import AdminSidebar from "../../components/Admin/Sidebar/AdminSidebar";
 import DashboardHero from "../../components/Admin/DashboardHero";
 import EditFaq from "../../components/Admin/Customization/EditFaq";
-import AdminProtected from "./../../hooks/adminProtected";
+import AdminProtected from "../../hooks/adminProtected";
 import Heading from "./../../utils/Heading";
 
 type Props = {};

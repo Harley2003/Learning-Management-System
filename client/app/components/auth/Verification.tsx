@@ -31,9 +31,10 @@ const Verification: FC<Props> = ({setRoute}) => {
             toast.error(
                 "The OTP you entered is invalid. Please check and try again."
             );
+            setRoute("Login");
             setInvalidError(true);
         } else {
-            console.log("An error occured: " + error);
+            console.log("An error occurred: " + error);
         }
     }, [isSuccess, error, setRoute]);
 

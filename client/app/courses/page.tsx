@@ -1,13 +1,14 @@
 "use client";
 
 import {useGetUsersAllCoursesQuery} from "@/redux/features/courses/courseApi";
-import {useGetHeroDataQuery} from "@/redux/features/layout/layoutApi";
+// import {useGetHeroDataQuery} from "@/redux/features/layout/layoutApi";
 import {useSearchParams} from "next/navigation";
 import React, {FC, useEffect, useState} from "react";
 import Loader from "../components/Loader/Loader";
 import Header from "../components/Header";
 import Heading from "../utils/Heading";
 import {styles} from "../styles/style";
+import {dataCategories} from "@/app/utils/DataCategories"
 import CourseCard from "../components/Course/CourseCard";
 import Footer from "../components/Footer";
 
@@ -17,7 +18,8 @@ const Page: FC<Props> = (props) => {
     const searchParams = useSearchParams();
     const search = searchParams?.get("title");
     const {data, isLoading} = useGetUsersAllCoursesQuery(undefined, {});
-    const {data: dataCategory} = useGetHeroDataQuery("Categories", {});
+    // const {data: dataCategory} = useGetHeroDataQuery("Categories", {});
+    // const categories = dataCategory?.layout.categories;
     const [route, setRoute] = useState("Login");
     const [open, setOpen] = useState(false);
     const [courses, setCourses] = useState([]);
@@ -25,22 +27,24 @@ const Page: FC<Props> = (props) => {
     const [displayedCoursesCount, setDisplayedCoursesCount] = useState(4);
 
     useEffect(() => {
-        if (category === "All") {
-            setCourses(data?.courses);
-        } else {
-            setCourses(
-                data?.courses.filter((item: any) => item.categories === category)
-            );
+        let filteredCourses = data?.courses;
+
+        // Lọc theo category nếu không phải là "All"
+        if (category !== "All") {
+            filteredCourses = filteredCourses.filter((item: any) => item.categories === category);
         }
 
+        // Lọc theo search nếu có giá trị tìm kiếm
         if (search) {
-            setCourses(
-                data?.courses.filter((item: any) =>
-                    item.name.toLowerCase().includes(search.toLowerCase())
-                )
+            filteredCourses = filteredCourses.filter((item: any) =>
+                item.name.toLowerCase().includes(search.toLowerCase())
             );
         }
 
+        // Cập nhật danh sách khóa học sau khi lọc
+        setCourses(filteredCourses);
+
+        // Giới hạn số lượng khóa học hiển thị
         setDisplayedCoursesCount(4);
     }, [category, data, search]);
 
@@ -48,7 +52,7 @@ const Page: FC<Props> = (props) => {
         setDisplayedCoursesCount((prevCount) => prevCount + 4);
     };
 
-    const categories = dataCategory?.layout.categories;
+    const categories = dataCategories;
 
     return (
         <div className="min-h-screen">
@@ -70,7 +74,7 @@ const Page: FC<Props> = (props) => {
                     />
                     <br/>
                     <h1 className={`${styles.title} 800px:!text-[45px]`}>
-                        <span className="text-gradient">List Course</span>
+                        List <span className="text-gradient">Course</span>
                     </h1>
                     <br/>
                     <br/>

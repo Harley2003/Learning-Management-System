@@ -9,7 +9,7 @@ import CourseContentList from "./CourseContentList";
 import CheckOutForm from "../Payment/CheckOutForm";
 import {Elements} from "@stripe/react-stripe-js";
 import Image from "next/image";
-import avatarDefault from "../../../public/assests/avatar.png";
+import avatarDefault from "@/public/assests/avatar.png";
 import {VscVerifiedFilled} from "react-icons/vsc";
 import {useSelector} from "react-redux";
 import {useRouter} from "next/navigation";
@@ -48,8 +48,7 @@ const CourseDetails: FC<Props> = ({
             if (user) {
                 setOpen(true);
             } else {
-                // setRoute("Login");
-                // openAuthModal(true);
+                router.push("/");
                 toast("You are not logged in!", {
                     duration: 1000,
                     icon: '⚠️',
@@ -63,10 +62,10 @@ const CourseDetails: FC<Props> = ({
     }, [dataUser]);
 
     useEffect(() => {
-        if (isSuccess) {
+        if (isSuccess && isPurchased) {
             router.push(`/course-access/${data._id}`);
         }
-    }, [isSuccess, router, data._id]);
+    }, [isSuccess, router, data._id, isPurchased]);
 
     return (
         <div>
@@ -78,9 +77,13 @@ const CourseDetails: FC<Props> = ({
                         </h1>
                         <div className="flex items-center justify-between pt-3">
                             <div className="flex items-center">
-                                <Ratings rating={data.ratings}/>
+                                <Ratings rating={data.ratings} isDemo={true}/>
                                 <h5 className="text-black dark:text-white">
-                                    {data.reviews?.length + " Reviews"}
+                                    {
+                                        "( " + (Number.isInteger(data?.ratings)
+                                            ? data?.ratings.toFixed(1)
+                                            : data?.ratings.toFixed(2)) + " / 5 Ratings )"
+                                    }
                                 </h5>
                             </div>
                             <h5 className="text-black dark:text-white">
@@ -89,7 +92,7 @@ const CourseDetails: FC<Props> = ({
                         </div>
                         <br/>
                         <h1 className="text-[25px] font-Poppins font-[600] text-black dark:text-white">
-                            What you will learn from this course?
+                        What you will learn from this course?
                         </h1>
                         <div>
                             {data?.benefits?.map((item: any, index: number) => (
@@ -138,7 +141,7 @@ const CourseDetails: FC<Props> = ({
                         {/* Course Description */}
                         <div className="w-full">
                             <h1 className="text-[25px] font-Poppins font-[600] text-black dark:text-white">
-                                Course Details
+                                Course Description
                             </h1>
                             <p className="text-[18px] mt-[20px] whitespace-pre-line w-full overflow-hidden text-black dark:text-white">
                                 {data.description}
@@ -148,14 +151,13 @@ const CourseDetails: FC<Props> = ({
                         <br/>
                         <div className="w-full">
                             <div className="800px:flex items-center">
-                                <Ratings rating={data?.ratings}/>
+                                <Ratings rating={data?.ratings} isDemo={true}/>
                                 <div className="mb-2 800px:mb-[unset]"/>
                                 <h5 className="text-[25px] font-Poppins text-black dark:text-white">
-                                    {Number.isInteger(data?.ratings)
-                                        ? data?.ratings.toFixed(1)
-                                        : data?.ratings.toFixed(2)}
+                                    {data.reviews?.length + " Reviews"}
                                 </h5>
                             </div>
+                            <br/>
                             <br/>
                             {(data?.reviews && [...data.reviews].reverse()).map(
                                 (item: any, index: number) => (
@@ -163,6 +165,7 @@ const CourseDetails: FC<Props> = ({
                                         <div className="flex">
                                             <div className="w-[50px] h-[50px]">
                                                 <Image
+                                                    priority
                                                     src={
                                                         item?.user.avatar
                                                             ? item?.user.avatar.url
@@ -178,8 +181,8 @@ const CourseDetails: FC<Props> = ({
                                                 <div className="flex items-center">
                                                     <h5 className="text-[18px] pr-2 text-black dark:text-white">
                                                         {item.user.name}
-                                                        <Ratings rating={data?.ratings}/>
                                                     </h5>
+                                                    <Ratings rating={data?.ratings} isDemo={true}/>
                                                 </div>
                                                 <p className="text-black dark:text-white">
                                                     {item.comment}
@@ -192,13 +195,14 @@ const CourseDetails: FC<Props> = ({
                                                 <h5 className="text-[18px] pr-2 text-black dark:text-white">
                                                     {item.user.name}
                                                 </h5>
-                                                <Ratings rating={data?.ratings}/>
+                                                <Ratings rating={data?.ratings} isDemo={true} />
                                             </div>
                                         </div>
                                         {item.commentReplies.map((item: any, index: number) => (
                                             <div className="w-full flex 800px:ml-16 my-5" key={index}>
                                                 <div className="w-[50px] h-[50px]">
                                                     <Image
+                                                        priority
                                                         src={
                                                             item?.user.avatar
                                                                 ? item?.user.avatar.url
@@ -217,7 +221,7 @@ const CourseDetails: FC<Props> = ({
                                                     </div>
                                                     <p>{item.comment}</p>
                                                     <small className="text-[#ffffff83]">
-                                                        {format(item.createdAt)} •
+                                                        {format(item.updatedAt)}
                                                     </small>
                                                 </div>
                                             </div>
@@ -245,13 +249,13 @@ const CourseDetails: FC<Props> = ({
                                 {isPurchased || dataUser.role === "admin" ? (
                                     <Link
                                         href={`/course-access/${data._id}`}
-                                        className={`${styles.button} !w-[180px] my-3 font-Poppins cursor-pointer !bg-[crimson]`}
+                                        className={`${styles.button} !w-[180px] my-2 font-Poppins cursor-pointer !bg-[crimson]`}
                                     >
                                         Enter to Course
                                     </Link>
                                 ) : (
                                     <div
-                                        className={`${styles.button} !w-[180px] font-Poppins cursor-pointer !bg-[crimson]`}
+                                        className={`${styles.button} !w-[180px] my-2 font-Poppins cursor-pointer !bg-[crimson]`}
                                         onClick={handleOrder}
                                     >
                                         {data?.price <= 0 ? "Enter to Course" : "Buy Now " + data.price + "$"}
@@ -288,7 +292,7 @@ const CourseDetails: FC<Props> = ({
                                 />
                             </div>
                             <div className="w-full">
-                                <Elements stripe={stripePromise} options={{clientSecret}}>
+                                <Elements stripe={stripePromise} options={{ clientSecret, locale: "en" }}>
                                     <CheckOutForm setOpen={setOpen} data={data} user={user}/>
                                 </Elements>
                             </div>

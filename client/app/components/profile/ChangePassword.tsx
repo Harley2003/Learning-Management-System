@@ -1,11 +1,12 @@
-import {styles} from "@/app/styles/style";
-import {useUpdatePasswordMutation} from "@/redux/features/user/userApi";
-import React, {FC, useEffect, useState} from "react";
+import { styles } from "@/app/styles/style";
+import { useUpdatePasswordMutation } from "@/redux/features/user/userApi";
+import React, { FC, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import {AiOutlineEye, AiOutlineEyeInvisible} from "react-icons/ai";
-import {Formik, Field, Form, ErrorMessage} from "formik";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
+// Component icon để chuyển đổi giữa hiển thị và ẩn mật khẩu
 const PasswordToggleIcon = ({
                                 show,
                                 toggle
@@ -14,23 +15,25 @@ const PasswordToggleIcon = ({
     toggle: () => void;
 }) => (
     <div className="absolute bottom-[25px] right-3 cursor-pointer" onClick={toggle}>
-        {show ? <AiOutlineEye size={20}/> : <AiOutlineEyeInvisible size={20}/>}
+        {show ? <AiOutlineEye size={20} /> : <AiOutlineEyeInvisible size={20} />}
     </div>
 );
 
+// Component chính cho thay đổi mật khẩu
 const ChangePassword: FC = () => {
     const [showOldPassword, setShowOldPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [updatePassword, {isSuccess, error, isLoading}] =
-        useUpdatePasswordMutation();
+    const [updatePassword, { isSuccess, error, isLoading }] = useUpdatePasswordMutation();
 
+    // Giá trị mặc định cho form
     const initialValues = {
         oldPassword: "",
         newPassword: "",
         confirmPassword: ""
     };
 
+    // Schema xác thực của form
     const validationSchema = Yup.object().shape({
         oldPassword: Yup.string().required("Old password is required"),
         newPassword: Yup.string()
@@ -46,31 +49,35 @@ const ChangePassword: FC = () => {
             .oneOf([Yup.ref("newPassword")], "Passwords must match")
     });
 
-    const handlerChangePassword = async (values: any, {resetForm}: any) => {
-        const {oldPassword, newPassword} = values;
+    // Hàm xử lý khi người dùng thay đổi mật khẩu
+    const handlerChangePassword = async (values: any, { resetForm }: any) => {
+        const { oldPassword, newPassword } = values;
 
+        // Kiểm tra xem mật khẩu mới có giống mật khẩu cũ không
         if (oldPassword === newPassword) {
             toast.error("New password must be different from the old password!");
             return;
         }
 
         try {
-            await updatePassword({oldPassword, newPassword});
-            resetForm();
+            // Cập nhật mật khẩu
+            await updatePassword({ oldPassword, newPassword });
+            resetForm(); // Reset form sau khi cập nhật thành công
         } catch (error) {
             console.log("An error occurred while changing the password.");
         }
     };
 
+    // Theo dõi trạng thái thay đổi mật khẩu (thành công hay lỗi)
     useEffect(() => {
         if (isSuccess) {
-            toast.success("Password changed successfully!");
+            toast.success("Password changed successfully!"); // Thông báo thành công
             return;
         }
 
         if (error && "data" in error) {
             const errorMessage = (error as any)?.data?.message || "An error occurred";
-            toast.error(errorMessage);
+            toast.error(errorMessage); // Thông báo lỗi nếu có
         }
     }, [isSuccess, error]);
 
@@ -80,21 +87,17 @@ const ChangePassword: FC = () => {
                 Change Password
             </h1>
             <div className="w-full">
+                {/* Formik để quản lý trạng thái form */}
                 <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}
                     onSubmit={handlerChangePassword}
                 >
-                    {({handleSubmit}) => (
-                        <Form
-                            onSubmit={handleSubmit}
-                            className="flex flex-col items-center"
-                        >
+                    {({ handleSubmit }) => (
+                        <Form onSubmit={handleSubmit} className="flex flex-col items-center">
+                            {/* Form nhập mật khẩu cũ */}
                             <div className="w-full md:w-3/4 mt-5 relative">
-                                <label
-                                    htmlFor="oldPassword"
-                                    className="block pb-2 text-black dark:text-white"
-                                >
+                                <label htmlFor="oldPassword" className="block pb-2 text-black dark:text-white">
                                     Enter your old password
                                 </label>
                                 <Field
@@ -103,7 +106,7 @@ const ChangePassword: FC = () => {
                                     className={`${styles.input} w-full mb-4 text-black dark:text-white`}
                                 />
                                 <PasswordToggleIcon
-                                    show={showOldPassword}
+                                    show={!showOldPassword}
                                     toggle={() => setShowOldPassword(!showOldPassword)}
                                 />
                             </div>
@@ -113,11 +116,9 @@ const ChangePassword: FC = () => {
                                 className="text-red-500 text-sm mb-2"
                             />
 
+                            {/* Form nhập mật khẩu mới */}
                             <div className="w-full md:w-3/4 mt-2 relative">
-                                <label
-                                    htmlFor="newPassword"
-                                    className="block pb-2 text-black dark:text-white"
-                                >
+                                <label htmlFor="newPassword" className="block pb-2 text-black dark:text-white">
                                     Enter your new password
                                 </label>
                                 <Field
@@ -126,7 +127,7 @@ const ChangePassword: FC = () => {
                                     className={`${styles.input} w-full mb-4 text-black dark:text-white`}
                                 />
                                 <PasswordToggleIcon
-                                    show={showNewPassword}
+                                    show={!showNewPassword}
                                     toggle={() => setShowNewPassword(!showNewPassword)}
                                 />
                             </div>
@@ -136,11 +137,9 @@ const ChangePassword: FC = () => {
                                 className="text-red-500 text-sm mb-2"
                             />
 
+                            {/* Form nhập lại mật khẩu */}
                             <div className="w-full md:w-3/4 mt-2 relative">
-                                <label
-                                    htmlFor="confirmPassword"
-                                    className="block pb-2 text-black dark:text-white"
-                                >
+                                <label htmlFor="confirmPassword" className="block pb-2 text-black dark:text-white">
                                     Confirm your new password
                                 </label>
                                 <Field
@@ -149,7 +148,7 @@ const ChangePassword: FC = () => {
                                     className={`${styles.input} w-full mb-4 text-black dark:text-white`}
                                 />
                                 <PasswordToggleIcon
-                                    show={showConfirmPassword}
+                                    show={!showConfirmPassword}
                                     toggle={() => setShowConfirmPassword(!showConfirmPassword)}
                                 />
                             </div>
@@ -159,6 +158,7 @@ const ChangePassword: FC = () => {
                                 className="text-red-500 text-sm mb-2"
                             />
 
+                            {/* Nút submit */}
                             <div className="w-full md:w-3/4 mt-2">
                                 <button
                                     type="submit"

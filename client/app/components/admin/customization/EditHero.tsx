@@ -70,6 +70,7 @@ const EditHero: FC<Props> = (props: Props) => {
                     className="1000px:w-[40%] flex 1000px:min-h-screen items-center justify-end pt-[70px] 1000px:pt-[0] z-10">
                     <div className="relative flex items-center justify-end">
                         <Image
+                            priority
                             src={image}
                             alt=""
                             className="object-contain 1100px:max-w-[90%] w-[90%] 1500px:max-w-[85%] h-[auto] z-[10]"

@@ -1,13 +1,15 @@
 import React, {FC, useEffect, useState} from "react";
 import {DataGrid} from "@mui/x-data-grid";
-import {Box, Button, Modal} from "@mui/material";
+import {Box, Button, Modal, Typography} from "@mui/material";
 import {AiOutlineDelete, AiOutlineMail} from "react-icons/ai";
+import { CiUnlock, CiLock } from "react-icons/ci";
 import {useTheme} from "next-themes";
 import {format} from "timeago.js";
 import {styles} from "@/app/styles/style";
 import {toast} from "react-hot-toast";
 import Link from "next/link";
 import {
+    useActivateDeactivateAccountMutation,
     useDeleteUserMutation,
     useGetAllUsersQuery,
     useUpdateUserRoleMutation
@@ -28,8 +30,8 @@ const AllUsers: FC<Props> = ({isTeam}) => {
     const [open, setOpen] = useState(false);
     const [userId, setUserId] = useState("");
 
-    const {data: loadUser, isLoading: isUserLoading} = useLoadUserQuery(undefined);
-    const {isLoading, data, refetch} = useGetAllUsersQuery(undefined);
+    const {data: loadUser, isLoading: isUserLoading} = useLoadUserQuery({});
+    const {isLoading, data, refetch} = useGetAllUsersQuery({});
 
     const [updateUserRole, {isSuccess: updateSuccess, error: updateError}] =
         useUpdateUserRoleMutation();
@@ -37,14 +39,16 @@ const AllUsers: FC<Props> = ({isTeam}) => {
     const [deleteUser, {isSuccess: deleteSuccess, error: deleteError}] =
         useDeleteUserMutation();
 
+    const [activateDeactivateAccount] = useActivateDeactivateAccountMutation();
+
     useEffect(() => {
         if (updateError) {
             const error = updateError as FetchBaseQueryError;
             if ('data' in error && error.data) {
-                const errorMessage = (error.data as any)?.message || "Update failed.";
+                const errorMessage = (error.data as any)?.message;
                 toast.error(errorMessage);
             } else {
-                toast.error("An unexpected error occurred.");
+                console.log("An unexpected error occurred.");
             }
         }
 
@@ -60,7 +64,7 @@ const AllUsers: FC<Props> = ({isTeam}) => {
                 const errorMessage = (error.data as any)?.message || "Delete failed.";
                 toast.error(errorMessage);
             } else {
-                toast.error("An unexpected error occurred.");
+                console.log("An unexpected error occurred.");
             }
         }
 
@@ -75,13 +79,13 @@ const AllUsers: FC<Props> = ({isTeam}) => {
         // {field: "id", headerName: "ID", flex: 0.3},
         {field: "name", headerName: "Name", flex: 0.5},
         {field: "email", headerName: "Email", flex: 0.5},
-        {field: "role", headerName: "Role", flex: 0.5},
-        {field: "courses", headerName: "Purchased Courses", flex: 0.5},
-        {field: "created_at", headerName: "Joined At", flex: 0.5},
+        {field: "role", headerName: "Role", flex: 0.2},
+        {field: "courses", headerName: "Purchased Courses", flex: 0.3},
+        {field: "created_at", headerName: "Joined At", flex: 0.3},
         {
             field: "delete",
-            headerName: "Delete",
-            flex: 0.2,
+            headerName: "Delete Account",
+            flex: 0.3,
             renderCell: (params: any) => {
                 return (
                     <Button
@@ -97,10 +101,47 @@ const AllUsers: FC<Props> = ({isTeam}) => {
                     </Button>
                 );
             }
+        },
+        {
+            field: "isActivate",
+            headerName: "Activate/Deactivate Account",
+            flex: 0.4,
+            renderCell: (params: any) => {
+                const isActivate = params.row.isActivate === "deactivate" ? "activate" : "deactivate";
+                return (
+                    <Button
+                        onClick={() => handleActivateDeactivate(params.row.id, isActivate)}
+                    >
+                        {isActivate === "activate" ? (
+                            <CiLock size={20} className="dark:text-white text-black" />
+                        ) : (
+                            <CiUnlock size={20} className="dark:text-white text-black" />
+                        )}
+                    </Button>
+                );
+            },
         }
     ];
 
     const rows: any = [];
+
+    /*
+    const NoDataOverlay = () => (
+        <Box
+            sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100%',
+                backgroundColor: theme === "dark" ? "#1F2A40" : "#F2F0F0"
+            }}
+        >
+            <Typography variant="h6" color={theme === "dark" ? "#fff" : "#000"}>
+                No data available
+            </Typography>
+        </Box>
+    );
+    */
 
     if (isTeam) {
         const newData = data && data.users.filter((item: any) => {
@@ -115,7 +156,8 @@ const AllUsers: FC<Props> = ({isTeam}) => {
                 email: item.email,
                 role: item.role,
                 courses: item.courses.length,
-                created_at: format(item.createdAt)
+                created_at: format(item.createdAt),
+                isActivate: item.isActivate
             });
         });
     } else {
@@ -128,18 +170,42 @@ const AllUsers: FC<Props> = ({isTeam}) => {
                     email: item.email,
                     role: item.role,
                     courses: item.courses.length,
-                    created_at: format(item.createdAt)
+                    created_at: format(item.createdAt),
+                    isActivate: item.isActivate
                 });
             }
         });
     }
 
     const handleSubmit = async () => {
-        await updateUserRole({email, role});
+       try {
+           await updateUserRole({email, role});
+       } catch (error) {
+           console.log("An unexpected error occurred.");
+       }
     };
 
     const handleDelete = async () => {
-        await deleteUser(userId);
+        const userToDelete = data.users.find((user: any) => user._id === userId);
+        if (userToDelete && userToDelete.courses.length > 0) {
+            toast.error("You can't delete this user because user has purchased courses. Just can lock uer.");
+            setOpen(false);
+            return;
+        }
+        try {
+            await deleteUser(userId).unwrap();
+        } catch (error) {
+            console.log("An error occurred while deleting the user.");
+        }
+    };
+
+    const handleActivateDeactivate = async (id: string, isActivate: string) => {
+        try {
+            await activateDeactivateAccount({ userId: id, isActivate: isActivate }).unwrap();
+            refetch();
+        } catch (error) {
+            console.log("Failed to update user status.");
+        }
     };
 
     return (
@@ -180,7 +246,7 @@ const AllUsers: FC<Props> = ({isTeam}) => {
                                         : "1px solid #ccc!important"
                             },
                             "& .MuiTablePagination-root": {
-                                color: theme === "dark" ? "#fff" : "#000"
+                                color: theme === "dark" ? "#fff" : "#000",
                             },
                             "& .MuiDataGrid-cell": {
                                 borderBottom: "none!important"
@@ -207,10 +273,15 @@ const AllUsers: FC<Props> = ({isTeam}) => {
                             },
                             "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
                                 color: `#fff !important`
+                            },
+                            "& .MuiDataGrid-overlay": {
+                                backgroundColor: theme === "dark" ? "#1F2A40" : "#A4A9FC",
+                                fontSize: "16px",
+                                color: "#fff",
                             }
                         }}
                     >
-                        <DataGrid rows={rows} columns={columns}/>
+                        <DataGrid rows={rows} columns={columns} localeText={{ noRowsLabel: "No data available"}}  />
                     </Box>
                     {active && (
                         <Modal

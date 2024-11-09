@@ -23,6 +23,7 @@ const ResetPassword: FC<Props> = ({setOpen, setRoute}) => {
     if (!getToken) {
         toast.error("Invalid or expired token");
         setOpen(false); // Optionally close the reset form
+        setRoute("Login");
         return null; // Prevent the component from rendering further
     }
 
@@ -58,7 +59,7 @@ const ResetPassword: FC<Props> = ({setOpen, setRoute}) => {
                 <label className={styles.label} htmlFor="password">New Password</label>
                 <div className="relative">
                     <input
-                        type={showPassword ? "text" : "password"}
+                        type={!showPassword ? "password" : "text"}
                         name="password"
                         id="password"
                         onChange={handleChange}
@@ -66,11 +67,11 @@ const ResetPassword: FC<Props> = ({setOpen, setRoute}) => {
                         className={errors.password ? "border-red-500" : "" + styles.input}
                         placeholder="Enter new password"
                     />
-                    {showPassword ? (
-                        <AiOutlineEye onClick={() => setShowPassword(false)}
+                    {!showPassword ? (
+                        <AiOutlineEye onClick={() => setShowPassword(true)}
                                       className="absolute right-3 top-[1.3rem] cursor-pointer"/>
                     ) : (
-                        <AiOutlineEyeInvisible onClick={() => setShowPassword(true)}
+                        <AiOutlineEyeInvisible onClick={() => setShowPassword(false)}
                                                className="absolute right-3 top-[1.3rem] cursor-pointer"/>
                     )}
                 </div>
@@ -78,7 +79,7 @@ const ResetPassword: FC<Props> = ({setOpen, setRoute}) => {
                 <label className={styles.label} htmlFor="confirmPassword">Confirm Password</label>
                 <div className="relative">
                     <input
-                        type={showConfirmPassword ? "text" : "password"}
+                        type={!showConfirmPassword ? "password" : "text"}
                         name="confirmPassword"
                         id="confirmPassword"
                         onChange={handleChange}
@@ -86,11 +87,11 @@ const ResetPassword: FC<Props> = ({setOpen, setRoute}) => {
                         className={errors.confirmPassword ? "border-red-500" : "" + styles.input}
                         placeholder="Confirm your password"
                     />
-                    {showConfirmPassword ? (
-                        <AiOutlineEye onClick={() => setShowConfirmPassword(false)}
+                    {!showConfirmPassword ? (
+                        <AiOutlineEye onClick={() => setShowConfirmPassword(true)}
                                       className="absolute right-3 top-[1.3rem] cursor-pointer"/>
                     ) : (
-                        <AiOutlineEyeInvisible onClick={() => setShowConfirmPassword(true)}
+                        <AiOutlineEyeInvisible onClick={() => setShowConfirmPassword(false)}
                                                className="absolute right-3 top-[1.3rem] cursor-pointer"/>
                     )}
                 </div>

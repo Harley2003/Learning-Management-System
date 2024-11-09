@@ -8,6 +8,7 @@ import Courses from "./components/Route/Courses";
 import Reviews from "./components/Route/Reviews";
 import FAQ from "./faq/FAQ";
 import Footer from "./components/Footer";
+import {useGetUsersAllCoursesQuery} from "@/redux/features/courses/courseApi";
 
 interface Props {
 }
@@ -16,6 +17,7 @@ const Page: FC<Props> = (props) => {
     const [open, setOpen] = useState(false);
     const [activeItem, setActiveItem] = useState(0);
     const [route, setRoute] = useState("Login");
+    const {data, isLoading} = useGetUsersAllCoursesQuery(undefined, {});
     return (
         <div>
             <Heading
@@ -30,8 +32,8 @@ const Page: FC<Props> = (props) => {
                 route={route}
                 setRoute={setRoute}
             />
-            <Hero/>
-            <Courses/>
+            <Hero data={data} />
+            <Courses data={data} isLoading={isLoading} />
             <Reviews/>
             <FAQ/>
             <Footer/>

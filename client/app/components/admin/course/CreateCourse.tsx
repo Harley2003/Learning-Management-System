@@ -45,6 +45,7 @@ const CreateCourse: FC<Props> = (props) => {
         }
     ]);
     const [courseData, setCourseData] = useState({});
+
     const handleCourseContentSubmit = async () => {
         // format benefits array
         const formattedBenefits = benefits.map((benefit) => ({

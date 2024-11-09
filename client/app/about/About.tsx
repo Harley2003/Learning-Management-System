@@ -7,9 +7,11 @@ const About: FC<Props> = (props) => {
     return (
         <div className="dark:text-white text-black">
             <br/>
+            <br/>
             <h1 className={`${styles.title} 800px:!text-[45px]`}>
                 What is <span className="text-gradient">ELearning?</span>
             </h1>
+            <br/>
             <br/>
             <div className="w-[95%] 800px:w-[85%] m-auto">
                 <p className="text-[18px] font-Poppins">
@@ -56,10 +58,10 @@ const About: FC<Props> = (props) => {
                     sky&apos;s the limit.
                 </p>
                 <br/>
-                <span className="font-Cursive text-[22px]">Yang Yang</span>
-                <h5 className="text-[18px] font-Poppins">
-                    Founder and CEO of ELearning
-                </h5>
+                {/*<span className="font-Cursive text-[22px]">Yang Yang</span>*/}
+                {/*<h5 className="text-[18px] font-Poppins">*/}
+                {/*    Founder and CEO of ELearning*/}
+                {/*</h5>*/}
                 <br/>
                 <br/>
                 <br/>

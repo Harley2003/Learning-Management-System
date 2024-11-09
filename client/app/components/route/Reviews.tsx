@@ -20,6 +20,7 @@ export const reviews = [
         avatar:
             "https://res.cloudinary.com/dkg6jv4l0/image/upload/v1686633060/Syihabul_qpfd4n.jpg",
         profession: "Junior Web Developer | Indonesia",
+
         ratings: 5,
         comment:
             "Join E-Learning! E-Learning focuses on practical applications rather than just teaching the theory behind programming languages or frameworks. I took a lesson on creating a web marketplace using React JS, and it was very helpful in teaching me the different stages involved in creating a project from start to finish. Overall, I highly recommend E-Learning to anyone looking to improve their programming skills and build practical projects. E-Learning is a great resource that will help you take your skills to the next level."
@@ -72,6 +73,7 @@ const Reviews: FC<Props> = (props) => {
                         alt="business"
                         width={700}
                         height={700}
+                        priority
                     />
                 </div>
                 <div className="800px:w-[50%] w-full">
@@ -82,10 +84,11 @@ const Reviews: FC<Props> = (props) => {
                     </h3>
                     <br/>
                     <p className={styles.label}>
-                        Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                        Necessitatibus delectus sunt vel porro! Eius esse exercitationem
-                        ipsam rerum sunt suscipit voluptas distinctio reprehenderit
-                        recusandae? Cum deleniti iusto nemo at voluptate.
+                        At E-Learning, we strive to empower our students by providing quality content and comprehensive
+                        resources. Our platform is designed to break down complex concepts into manageable steps,
+                        helping students of all levels build practical skills. From fundamental programming tutorials to
+                        advanced project-based learning, we are dedicated to supporting each student&#39;s journey and
+                        career growth.
                     </p>
                 </div>
                 <br/>

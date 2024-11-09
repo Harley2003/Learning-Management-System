@@ -22,8 +22,8 @@ const CourseDetailsPage: FC<Props> = ({id}) => {
     const [stripePromise, setStripePromise] = useState<any>(null);
     const [clientSecret, setClientSecret] = useState("");
     const {data, isLoading} = useGetCourseDetailsQuery(id);
-    const {data: config} = useGetStripePublishablekeyQuery(undefined);
-    const {data: userData} = useLoadUserQuery(undefined);
+    const {data: config} = useGetStripePublishablekeyQuery({});
+    const {data: userData} = useLoadUserQuery({});
     const [createPaymentIntent, {data: paymentIntentData, error}] =
         useCreatePaymentIntentMutation();
 
@@ -32,7 +32,7 @@ const CourseDetailsPage: FC<Props> = ({id}) => {
             const publishablekey = config?.publishablekey;
             setStripePromise(loadStripe(publishablekey));
         }
-        if (data) {
+        if (data && data.course.price > 0) {
             const amount = Math.round(data.course.price * 100);
             createPaymentIntent(amount);
         }

@@ -32,9 +32,9 @@ const DashboardHeader: FC<Props> = ({open = false, setOpen}) => {
         const socketIo = socketIO(ENDPOINT, {transports: ["websocket"]});
         socketIo.on("newNotification", refetch);
 
-        return () => {
-            socketIo.disconnect();
-        };
+        // return () => {
+        //     socketIo.disconnect();
+        // };
     }, [refetch]);
 
     const handleNotificationStatusChange = useCallback(

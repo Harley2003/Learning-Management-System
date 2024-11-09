@@ -12,13 +12,14 @@ import {
     VideoCallIcon,
     ExitToAppIcon
 } from "./Icon";
-import avatarDefault from "../../../../public/assests/avatar.png";
+import avatarDefault from "@/public/assests/avatar.png";
 import Link from "next/link";
 import Image from "next/image";
 import {useTheme} from "next-themes";
 import {useLogoutMutation} from "@/redux/features/auth/authApi";
 import {useRouter} from "next/navigation";
 import {useSelector} from "react-redux";
+import {persistor} from "@/redux/store";
 
 interface ItemProps {
     title: string;
@@ -74,6 +75,7 @@ const AdminSidebar: FC<AdminSidebarProps> = ({data}) => {
     const logoutHandler = async () => {
         try {
             await logout().unwrap();
+            await persistor.purge();
             router.push("/");
         } catch (error) {
             console.error("Logout error:", error);
@@ -139,10 +141,11 @@ const AdminSidebar: FC<AdminSidebarProps> = ({data}) => {
                         )}
                     </MenuItem>
 
-                    {!isCollapsed && (
+                    {!isCollapsed ? (
                         <Box mb="25px">
                             <Box display="flex" justifyContent="center" alignItems="center">
                                 <Image
+                                    priority
                                     alt="profile-user"
                                     width={100}
                                     height={100}
@@ -166,8 +169,26 @@ const AdminSidebar: FC<AdminSidebarProps> = ({data}) => {
                                 </Typography>
                             </Box>
                         </Box>
+                    ) : (
+                        <Box mb="25px">
+                            <Box display="flex" justifyContent="center" alignItems="center">
+                                <Link href="/" className="inline-block">
+                                    <Image
+                                        priority
+                                        alt="profile-user"
+                                        width={50}
+                                        height={50}
+                                        src={user.avatar ? user.avatar.url : avatarDefault}
+                                        style={{
+                                            borderRadius: "50%",
+                                            border: "3px solid #5b6fe6"
+                                        }}
+                                        className="h-[50px] w-[50px]"
+                                    />
+                                </Link>
+                            </Box>
+                        </Box>
                     )}
-
                     <Box paddingLeft={isCollapsed ? undefined : "10%"}>
                         <Item
                             title="Dashboard"
@@ -223,20 +244,6 @@ const AdminSidebar: FC<AdminSidebarProps> = ({data}) => {
                             title="Manager Courses"
                             to="/admin/display-courses"
                             icon={<OndemandVideoIcon/>}
-                            selected={selected}
-                            setSelected={setSelected}
-                        />
-                        <Typography
-                            variant="h6"
-                            className="!text-[18px] text-black dark:text-[#ffffffc1] capitalize !font-[400]"
-                            sx={{m: "15px 0 5px 20px"}}
-                        >
-                            {!isCollapsed && "Analytics"}
-                        </Typography>
-                        <Item
-                            title="Courses Analytics"
-                            to="/admin/courses-analytic"
-                            icon={<BarChartOutlinedIcon/>}
                             selected={selected}
                             setSelected={setSelected}
                         />

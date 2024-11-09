@@ -46,7 +46,7 @@ const CoursePreview: FC<Props> = ({
                         {courseData?.price <= 0 ? "Free" : courseData?.price + "$"}
                     </h1>
                     <h5 className="pl-3 text-[20px] mt-2 line-through opacity-80">
-                        {courseData?.estimatedPrice > 0 ?? courseData?.estimatedPrice}
+                        {courseData?.estimatedPrice > 0 ? courseData?.estimatedPrice + "$" : ""}
                     </h5>
                     <h4 className="pl-5 pt-4 text-[22px]">
                         {Number(discountPercentagePrice) > 0 ? discountPercentagePrice + "% Off" : null}
@@ -112,6 +112,8 @@ const CoursePreview: FC<Props> = ({
                         <p className="pl-2">{item.title}</p>
                     </div>
                 ))}
+                <br/>
+                <br/>
                 {/* course description */}
                 <div className="w-full">
                     <h1 className="text-[25px] font-Poppins font-[600]">

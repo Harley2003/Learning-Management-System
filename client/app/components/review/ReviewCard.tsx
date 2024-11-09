@@ -9,9 +9,10 @@ type Props = {
 const ReviewCard: FC<Props> = ({item}) => {
     return (
         <div
-            className="w-full h-max pb-4 dark:bg-slate-500 dark:bg-opacity-20 border border-[#00000028] dark:border-[#ffffff1d] backdrop-blur shadow-[bg-slate-700] p-3 rounded min-h-[250px] flex flex-col">
+            className="w-full h-full pb-4 dark:bg-slate-500 dark:bg-opacity-20 border border-[#00000028] dark:border-[#ffffff1d] backdrop-blur shadow-[bg-slate-700] p-3 rounded min-h-[250px] flex flex-col">
             <div className="w-full flex">
                 <Image
+                    priority
                     src={item.avatar}
                     alt=""
                     className="w-[50px] h-[50px] rounded-full object-cover"
@@ -27,7 +28,7 @@ const ReviewCard: FC<Props> = ({item}) => {
                             {item.profession}
                         </h6>
                     </div>
-                    <Ratings rating={item.ratings}/>
+                    <Ratings rating={item.ratings} isDemo={true}/>
                 </div>
                 {/* mobile */}
                 <div className="800px:hidden w-full flex justify-between flex-col">

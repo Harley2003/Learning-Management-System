@@ -127,6 +127,11 @@ const AllInvoices: FC<Props> = ({isDashboard}) => {
                             },
                             "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
                                 color: `#fff !important`
+                            },
+                            "& .MuiDataGrid-overlay": {
+                                backgroundColor: theme === "dark" ? "#1F2A40" : "#A4A9FC",
+                                fontSize: "16px",
+                                color: "#fff",
                             }
                         }}
                     >
@@ -134,6 +139,7 @@ const AllInvoices: FC<Props> = ({isDashboard}) => {
                             rows={rows}
                             columns={columns}
                             {...(!isDashboard && {components: {Toolbar: GridToolbar}})}
+                            localeText={{ noRowsLabel: "No data available"}}
                         />
                     </Box>
                 </Box>

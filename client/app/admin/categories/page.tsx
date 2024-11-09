@@ -1,7 +1,7 @@
 "use client";
 
 import React, {FC} from "react";
-import AdminProtected from "./../../hooks/adminProtected";
+import AdminProtected from "../../hooks/adminProtected";
 import Heading from "./../../utils/Heading";
 import AdminSidebar from "../../components/Admin/Sidebar/AdminSidebar";
 import DashboardHero from "../../components/Admin/DashboardHero";

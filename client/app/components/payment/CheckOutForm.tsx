@@ -60,11 +60,12 @@ const CheckOutForm: FC<Props> = ({setOpen, data, user}) => {
         if (dataOrder) {
             setLoadUser(true);
             socketIo.emit("notification", {
-                title: "New Order",
-                message: `You have a new order from ${data.name}`,
-                userId: user._id,
+                // title: "New Order",
+                // message: `Customer ${user.name} have a new order from ${data.name}`,
+                // userId: user._id,
             });
             router.push(`/course-access/${data._id}`);
+            toast.success("Payment completed successfully.");
         }
 
         if (error) {

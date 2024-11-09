@@ -11,7 +11,6 @@ import { useSelector } from "react-redux";
 type Props = {};
 
 const Page: FC<Props> = (props) => {
-    // const {data} = useLoadUserQuery(undefined);
     const {user} = useSelector((state: any) => state.auth);
     return (
         <div>
@@ -22,7 +21,7 @@ const Page: FC<Props> = (props) => {
                     keywords="Prograaming,MERN,Redux,Machine Learning"
                 />
                 <div className="flex min-h-screen">
-                    <div className="1500px:w-[16%] w-1/5">
+                    <div className="1500px:w-[15%] w-1/5">
                         <AdminSidebar data={user}/>
                     </div>
                     <div className="w-[85%]">

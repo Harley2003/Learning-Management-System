@@ -6,6 +6,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { ErrorMiddleware } from "./middleware/error";
 
+// Import các route
 import userRouter from "./routes/user.route";
 import courseRouter from "./routes/course.route";
 import orderRouter from "./routes/order.route";
@@ -13,46 +14,45 @@ import notificationRouter from "./routes/notification.route";
 import analyticsRouter from "./routes/analytics.route";
 import layoutRouter from "./routes/layout.route";
 
-// body parser
+// Cấu hình body parser để giới hạn kích thước request body
 app.use(express.json({ limit: "50mb" }));
 
-// cookie parser
+// Cấu hình cookie parser để xử lý cookie từ client
 app.use(cookieParser());
 
-// cors => cross origin resoure sharing
+// CORS để chia sẻ tài nguyên giữa các nguồn gốc khác nhau
 app.use(
-  cors({
-    origin: ["http://localhost:3000"],
-    credentials: true
-  })
+    cors({
+        origin: ["http://localhost:3000"], // Cho phép từ nguồn gốc cụ thể
+        credentials: true
+    })
 );
 
-// routes
+// Định tuyến các route API
 app.use(
-  "/api/v1",
-  userRouter,
-  courseRouter,
-  orderRouter,
-  notificationRouter,
-  analyticsRouter,
-  layoutRouter
+    "/api/v1",
+    userRouter,
+    courseRouter,
+    orderRouter,
+    notificationRouter,
+    analyticsRouter,
+    layoutRouter
 );
 
-// testing api
-app.get("/test", (reg: Request, res: Response, next: NextFunction) => {
-  res.status(200).json({
-    success: true,
-    message: "API is working"
-  });
+// Route test để kiểm tra hoạt động của API
+app.get("/test", (req: Request, res: Response, next: NextFunction) => {
+    res.status(200).json({
+        success: true,
+        message: "API is working"
+    });
 });
 
-// unknown route
-app.all("*", (reg: Request, res: Response, next: NextFunction) => {
-  const err = new Error(`Route ${reg.originalUrl} not found`) as any;
-  err.statusCode = 404;
-  next(err);
+// Xử lý các route không tồn tại
+app.all("*", (req: Request, res: Response, next: NextFunction) => {
+    const err = new Error(`Route ${req.originalUrl} not found`) as any;
+    err.statusCode = 404;
+    next(err); // Chuyển tiếp lỗi để xử lý trong ErrorMiddleware
 });
 
-// app.use(limiter);
-
+// Middleware xử lý lỗi
 app.use(ErrorMiddleware);

@@ -2,7 +2,7 @@
 
 import React, {FC, useState} from "react";
 import Heading from "./../../utils/Heading";
-import AdminProtected from "./../../hooks/adminProtected";
+import AdminProtected from "../../hooks/adminProtected";
 import AdminSidebar from "../../components/Admin/Sidebar/AdminSidebar";
 import CreateCourse from "../../components/Admin/Course/CreateCourse";
 import DashboardHeader from "../../components/Admin/DashboardHeader";

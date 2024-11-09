@@ -99,17 +99,17 @@ const Login: FC<Props> = ({setRoute, setOpen}) => {
                         } ${styles.input}`}
                     />
                     {!show ? (
-                        <AiOutlineEyeInvisible
+                        <AiOutlineEye
                             className="absolute bottom-3 right-2 z-1 cursor-pointer"
                             size={20}
                             onClick={() => setShow(true)}
                         />
                     ) : (
-                        <AiOutlineEye
-                            className="absolute bottom-3 right-2 z-1 cursor-pointer"
-                            size={20}
-                            onClick={() => setShow(false)}
-                        />
+                        <AiOutlineEyeInvisible
+                        className="absolute bottom-3 right-2 z-1 cursor-pointer"
+                        size={20}
+                        onClick={() => setShow(false)}
+                />
                     )}
                 </div>
                 {errors.password && touched.password && (

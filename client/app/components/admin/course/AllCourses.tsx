@@ -158,10 +158,15 @@ const AllCourses: FC<Props> = (props) => {
                             },
                             "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
                                 color: `#fff !important`
+                            },
+                            "& .MuiDataGrid-overlay": {
+                                backgroundColor: theme === "dark" ? "#1F2A40" : "#A4A9FC",
+                                fontSize: "16px",
+                                color: "#fff",
                             }
                         }}
                     >
-                        <DataGrid rows={rows} columns={columns}/>
+                        <DataGrid rows={rows} columns={columns} localeText={{ noRowsLabel: "No data available"}} />
                     </Box>
                     {open && (
                         <Modal
